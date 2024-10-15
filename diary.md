@@ -6,3 +6,6 @@ I have recieved feedback for my project plan draft. I have begun implementing al
 
 12/10/24:
 I have now completed and submitted my final version of my plan, with all the feedback given to me by my supervisor. Now I will begin to follow the timeline that I have created and will begin work on the early deliverables, alongside the timeline. I feel that the early deliverables will be straightforward to complete, so will dedicate the majority of my time to completing the timeline, starting with creating sketeches for how I intend the app to look, and implement the first features for basic app functions.
+
+15/10/24:
+I have been learning to use Kotlin and have tested some basic on an Android phone that I have found to use for the project. 
