@@ -1,0 +1,219 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{titling} 
+\usepackage{graphicx}
+\usepackage{acronym}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \center
+    Ritesh Vangala 2024
+    \vspace*{1cm}
+    
+    \title{Building a Mobile Application}
+    {\Huge \bfseries \thetitle\par}
+    \vspace{0.5cm}
+
+    CS3821 - Final Year Project Plan
+    {\Large \textit{\thesubtitle}\par}
+    \vspace{0.5cm}
+    \vspace{0.5cm}
+    Ritesh Vangala
+    {\Large \theauthor\par}
+    \vspace{0.5cm}
+    \textbf{Supervisor:} Francisco Ferreira Ruiz
+    
+    \vspace{0.5cm}
+    Department of Computer Science
+    \vspace{0.5cm}
+
+    \today
+    {\large \thedate\par}
+    
+    \vspace{2cm}
+    
+    {\large \textbf{Royal Holloway, University of London}}
+    
+\end{titlepage}
+
+\section{Abstract}
+Productivity, time and workload management skills are all vital in ensuring that people can complete important tasks in order to achieve their goals. To aid users with this, I will be creating an application designed to boost these skills and also help to  increase their motivation.
+
+Firstly, I will cover a feature that will aid users’ workload management. One of these will be a system where tags are assigned automatically to each to-do list item. I plan to implement this feature by making use of a machine-learning model to scan the contents of a user’s to-do list description. The model can then detect specific keywords in these sentences and can therefore assign the most suitable category.  I aim to train the model with the use of a set of data (found online or created by myself), to associate a certain keyword to a specific category. For example, if the user types “Go for a run”, the “run” keyword will be detected and the item will be given an exercise tag. Tags will not only save the users time, but they will also be able to more easily locate specific items they are looking for, hence also improving their organisation skills \cite{one}.  
+
+Next, I will discuss a feature that aids users’ concentration while working. I will include a timer as part of the app and will allow the user to decide how long they want to work and take a break, to help optimise work output. Motion sensors will also be used in order to detect when a user has picked up their device (when programming this feature a set minimum level of movement will be required, to account for accidental nudges). Once they have, a notification will be used as a way to take their mind back to the work they are undertaking. If the user needs to use the phone for work purposes they can ignore the message, otherwise the timer will be paused. This is to keep them accountable and ensure that they stick to the task for the duration of time that they have allocated \cite{two}. The user can decide the number of cycles to complete, so if they choose three, then the timer repeats three times, but there will not be a break added at the end of the final cycle. When setting a timer, the user can assign a specific category to the timer, and time spent will be allocated to the category.  
+
+This information will be taken and used as part of analytics. The data will be stored and the percent time spent for each category will be calculated. These calculations will be used to show a graphical (bar chart or pie chart) breakdown of what a user’s time has been spent on. The user can view these statistics on a weekly or monthly basis in order to reflect on the progress that they have made. By doing this, they can then refine the amount of time that they choose to spend on each category. For example, if a user has spent too long a time on a minimal number of tasks, they can adjust their targets accordingly in order to work more efficiently. 
+
+In order to motivate and inspire users, I will be including a social media section as part of this app. This will be a separate section of the app that will require a passcode to enter, in order to ensure users won’t enter this section and become distracted when they are supposed to be focused on work. When users see their friends' posts where they are working hard, this in turn inspires them to stay productive, so they can make similar posts of their own. 
+
+I will also be including accessibility features for those with colour blindness. Users will be able to change the colours and tone on the screen in order to suit an individual's needs based on their colour blindness type (deuteranopia, protanopia or tritanopia). Studies have shown that giving these options increases the users’ efficiency when navigating apps and improves their satisfaction \cite{three}. My plan to implement this feature is to conduct research based on which combination of colours each type of colour-blind user can most easily distinguish between, in order to maximise visual clarity. Out of all available options, the ones which are most pleasant to look at while using the app, are the ones I will make available for use in the app settings. 
+
+The application will also feature elements of app design that will improve user friendliness. An example of one of these is with app navigation. To make it simple for the user, I will add buttons at the bottom of the screen so users can easily distinguish between different pages of the app. Having this simplicity is important, as users can become confused if there are too many hierarchies used with regard to navigation \cite{four}. 
+
+My plan to be able to bring all the features together in one place is with the use of Android Studios and the programming language Kotlin. I have selected Kotlin as it is officially supported by Google and is very well known for being a very versatile language to work with \cite{five}. Java (a language I have experience with) and Kotlin share many core similarities, so using Kotlin will only be a small learning curve.  There are also countless resources available, so I can easily learn the concepts needed to complete this application. It allows me to be able to employ a test-driven development technique throughout this project.
+
+Being able to use TDD means that I can achieve a much more reliable and higher quality application, than if it was not used \cite{six}. It has also been shown to improve code quality \cite{seven} and make developers more confident in the work they produce \cite{eight}. Unit testing will be particularly useful to be able to ensure that a specific aspect of my application is operating as intended before I can move on to focus on developing a different feature. An example of where it would be useful in my project is when creating two distinctly different features (like the analytics and social media pages), I can ensure one feature is fully operating as intended before moving on to the next. The final result will mean a more coherent application.
+
+To summarise, with this project, I aim to create a productivity application with Android Studios and Kotlin. The app will provide features that will aid users with concentration, time management and productivity. While producing the final app, I aim to gain a deeper understanding of the development process and the science behind what makes an app interesting to use long term. This knowledge that I attain, will lead to an app that delivers as enjoyable an experience as possible.
+
+\section{Timeline}
+I will focus on implementation of core features and research during the majority of the first term. In term 2, I focus on adding the smaller features and refining the overall application (with the use of smoother animations, better font etc.). If I am able to follow this timeline as I intend, I plan to leave some extra time at the end of term 2, in order to spend plenty of time completing the report and preparing for the presentation.
+
+\textit{Dates shown below are inclusive}
+
+\subsection{Term 1}
+\subsubsection{30/9/24 to 13/10/24}
+INTERNAL MILESTONE: Finalise language and environment for project
+
+During this period of time I will research and finalise the programming language I will use for this project. I will look at a variety of options (such as React Native, Flutter and Android Studios). Out of these options I will compare their pros and cons and decide which is most suitable for this project.
+
+I will also brainstorm various ideas that would suit a productivity based application. The ones I feel are most important to customers and allow me to reach my targets with this app are the ones I will use. 
+
+\subsubsection{14/10/24 to 20/10/24}
+This week I will create various mock pages of how the app may look. I will analyse each one based on user psychology and how a user may interact with the app with the use of human computer interaction studies.
+
+\subsubsection{21/10/24 to 27/10/24}
+INTERNAL MILESTONE: Complete tasks page and timer along with motion sensor features.
+
+For this week I will complete the tasks page and implement the time section. I will add the motion sense features with the use of Sensor classes available in Kotlin. As these will be some of the most commonly used features I feel it will be sensible to complete them early.
+
+\subsubsection{28/10/24 to 3/11/24}
+INTERNAL MILESTONE: Implement login and registration for social features
+
+This is a relatively simple milestone to achieve, so along with this I will put time into other tasks. In particular I will focus on researching key features that make an app interesting to use and will decide which ones are most suitable. 
+
+
+\subsubsection{4/11/24 to 17/11/24}
+For this week I will work on a database to hold user login credentials and to research datasets in order to train a machine learning model for the tags feature. These are both areas where I have less experience working with, so I have allocated two weeks for this process. I feel that this amount of time is a perfect balance between getting this important task done, whilst not letting the rest of the project lag behind.
+
+\subsubsection{18/11/24 to 24/11/24}
+INTERNAL MILESTONE:Implement analytics page
+
+This week I will research and evaluate various ways of displaying analytical information, based on ease of understanding for the users. This feature is a very important one as it accomplishes one of my main goals which is to aid time management. For me, it is important to prioritise the tasks that most aid in achieving my main targets.
+
+
+\subsubsection{25/11/24 to 4/12/24}
+INTERNAL MILESTONE: Automated tags feature will be implemented.
+
+These tags are crucial in allowing for easy organisation for the users As this is one of the more complex features involved in the project, I have allocated a full week to complete this. I will learn about how to implement machine learning techniques and apply them to my code.
+
+
+
+\subsubsection{5/12/24 to 13/12/24}
+I will concentrate on the presentation and interim report, which are the external milestones. Any final details I have previously missed will be included during this time. I will ensure that my work is presented well and easy to read and understand, whilst conveying clearly what I have achieved during this term.  
+
+\subsection{Term 2}
+\subsubsection{8/1/2025 to 12/1/2025}
+As this is the first week back, I will look back on the progress that I have achieved in the previous term and then check to see if there are any smaller tasks leftover that I can complete quickly. After that, I will research and evaluate various methods used to make apps more accessible for those with colour blindness. This is important for me to get an idea of what actually needs to be programmed.
+
+\subsubsection{13/1/25 to 19/1/25}
+INTERNAL MILESTONE:Implement accessibility features
+
+This week I will implement all the accessibility aspects into the app. As all the research was conducted prior, I expect this to be a relatively short task. After this, I will move on to begin work on the remaining social media features. I will start by allowing users to upload and post photos, which is the most important part of this feature.
+
+
+\subsubsection{20/1/25 to 26/1/25}
+INTERNAL MILESTONE: Complete remaining social features 
+This week I will complete the last features of the social section of the application, which include the option to caption an image, a like button and comments for each post. I feel this is the perfect time to complete this as it is straightforward and can be done quickly. 
+
+\subsubsection{27/1/25 to 2/2/25}
+INTERNAL MILESTONE: Optimise machine learning model
+
+For this week, I will spend time testing the model to ensure it is tagging to list items accurately. If results are less than desirable, I will optimise the model to ensure that the categories are more suited to the to-do list item. 
+
+
+\subsubsection{3/2/25 to 16/2/25}
+INTERNAL MILESTONE: Enhance user experience
+
+This is a crucial goal in ensuring that the users enjoy the app experience as much as possible. I will begin by conducting research and evaluating the many methods that have been used to improve user interaction. A key thing I will be looking for is user retention methods that will make sure the app will be used on a long term basis. This is important to me as this long term use is what will guarantee results for the user base. Once done, I will employ the techniques that are most suitable for my app.
+
+
+\subsubsection{17/2/25 to 2/3/25}
+I have decided to leave this block of time free in order to account for delays that may happen. In a project there is a high likelihood that certain tasks may require more time than initially anticipated, so I believe it is important to prepare for this. If I do manage to stick to the schedule, I will take this opportunity to think about any other features that could potentially enhance the overall experience. While this is a very short period of time, I still feel that it is enough to implement any smaller additions that may improve the final product.   
+
+
+\subsubsection{3/3/25 to 19/3/25}
+I will use this time in order to evaluate my project and write about what features I implemented worked as intended and where there is room for improvement.  Any other features or methods of development I could have used will be discussed, and I will mention how they may have improved features which may be subpar.
+
+
+\subsubsection{20/3/25 to 4/4/25}
+I will focus on the final report during this time, which is an external milestone. I have left a large amount of time for this as the final report is a large document and it is important to ensure it presents my project well and uses language that is easy to understand.
+
+\section{Risks and Mitigations}
+\subsection{Time management issues}
+This is a high impact risk. Time management is vital for this project in order to meet deadlines and so reports and code can be done well without being rushed. If time is not managed properly, the quality of the project will decrease. There is a medium probability of this risk occurring. When planning the timeline, I will allow for space to complete and tasks that may be overdue, to prevent this from taking place. If there are moments where I am short on time and have many unfinished tasks then I will prioritise the ones that allow me to make the most progress.
+
+\subsection{Poor estimation of task difficulty}
+This is a high impact risk. It is very important to understand what a task takes to be completed, so if tasks are not done in order which allows time for new learning, then the project may stall frequently. There is a low probability of this taking place as I have an understanding of what each task in my project takes to be completed. Due to this I am able to plan the order of tasks and allocate time for them sensibly. If there is a task that seems too timetaking or requires knowledge not yet fully obtained, I will prioritise more approachable tasks whilst learning new information that is needed. This will allow the project to progress and I will be more prepared to tackle the more difficult task
+
+\subsection{Lack of knowledge about the science of productivity apps}
+This is a medium impact risk. Learning about the psychology of what makes an app fun to use is very important to this project, as the app is meant to motivate people to want to use it in order to aid their goals. Not having this knowledge will make the app subpar and not meet its goals. There is a low probability of this occurring. To ensure this does not happen, I will read articles and books, along with watching informative videos and tutorials about app design. If I have not gained sufficient knowledge from prior materials, then I will make contact with a family friend who is familiar with the field.
+
+\subsection{Lack of data available for ML feature (EXTERNAL RISK)}
+This is a medium impact risk. If this data is not available for use this means that the model may not be able to accurately tag to do list items. There is a medium probability of this happening. If there is no set of data available, I can create my own dataset and train the model with the most commonly used tags (such as study,exercise etc.).  If even this is not possible then I can change the feature to be one where the user can enter their own tags.
+
+
+\subsection{Security risk as user credentials will be saved on database for login}
+This is high impact. The database may be hacked and personal information of users will be leaked. The probability of this taking place is very low. To avoid this, I will research security measures for databases and implement them. If a breach does happen,an email will be sent to customers informing them of this and asking them to change their passwords and optionally to enable two factor authentication.
+
+
+\subsection{Accessibility issues for some users (EXTERNAL RISK)}
+This is a high impact risk. If the app does not include features to a variety of different needs, some users will not be able to use the app. The probability of it happening is low as a very small number of the users will be affected by this. I will research and evaluate various methods developers have used to provide accessibility, and implement the ones most suitable to this app. If I am unable to implement these features, I will guide the users via my app to settings on their phone, to check if their needs are provided by their phone’s operating system.
+
+\section*{Acronyms}
+\begin{acronym}
+    \acro{ML}{Machine Learning}
+    \acro{TDD}{Test-driven Development}
+\end{acronym}
+
+
+\begin{thebibliography}{8}
+    \bibitem{one}
+    Vuorikari, RH 2009, 'Tags and self-organisation: a metadata ecology for learning resources in a multilingual context', PhD, Open Universiteit: faculties and services.
+
+   \textit{This study was important to my project as it justifies the inclusion of the tagging feature as they have been shown to aid with organisation.}
+
+
+    \bibitem{two}
+    Dababneh, A. J., Swanson, N. and Shell, R. L. (2001) ‘Impact of added rest breaks on the productivity and well being of workers’, Ergonomics, 44(2), pp. 164–174. doi: 10.1080/00140130121538.
+
+    \textit{This study shows that giving workers improves overall productivity output, so using this I have decided to include break times with my time.}
+
+    \bibitem{three}
+    Iqbal, M.W., Ahmad, N., Shahzad, S.K., Naqvi, M.R. and Feroz, I., 2018. Usability aspects of adaptive mobile interfaces for colour-blind and vision deficient users. International Journal of Computer Science And Network Security, 18(10), pp.179-189.
+
+    \textit{This study shows how impactful including features that help colour blind users is. Therefore it justifies my I aim to pursue this in my project.} 
+
+
+
+    \bibitem{four}
+    Chen, Q., Chen, C., Hassan, S., Xing, Z., Xia, X. and Hassan, A.E., 2021. How should I improve the ui of my app? a study of user reviews of popular apps in the google play. ACM Transactions on Software Engineering and Methodology (TOSEM), 30(3), pp.1-38.
+
+    \textit{In this study it is shown that including too many hierarchies to a single app would confuse the users. Due to this I aim to include only up to two hierarchies in my project.}
+
+
+    \bibitem{five}
+    Moskala, M. and Wojda, I., 2017. Android Development with Kotlin. Packt Publishing Ltd.
+
+    \textit{This book explains that Kotlin is a great language to use as it is versatile, easy to read and understand, along with benefitting from support from Google. Therefore I have decided to use this programming language.}
+
+    \bibitem{six}
+    Vijaywargi, A. and Boddapati, U.K., EMBRACING TEST-DRIVEN DEVELOPMENT (TDD) IN MODERN ANDROID APPLICATIONS.
+
+
+    \bibitem{seven}
+    M. Karam, S. Youssef, and M. Mohsen, "Investigating the Impact of Test-Driven Development on Android Project Success: An Empirical Study," in Proc. 13th Int. Conf. Softw. Technol. (ICSOFT), July 2018, pp. 382- 389, doi: 10.5220/0006883603820389
+
+    \bibitem{eight}
+    M. Karam, S. Youssef, and M. Mohsen, "Exploring the Benefits and Challenges of Test-Driven Development in Mobile App Projects," Int. J. Adv. Comput. Sci. Appl., vol. 10, no. 1, pp. 239-247, 2019, doi: 10.14569/IJACSA.2019.0100129.
+
+    \textit{All of the references 6,7 and 8 are to do with the use of TDD in Android development. The studies show significant improvements to code and increased confidence from developers. Hence, I will make use of TDD in my project.}
+
+
+    
+\end{thebibliography}
+
+\end{document}
