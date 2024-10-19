@@ -9,3 +9,7 @@ I have now completed and submitted my final version of my plan, with all the fee
 
 15/10/24:
 I have been learning to use Kotlin and have tested some basic functions on an Android phone that I have found to use for the project. Today I plan to complete some of the early deviverables and will upload the Project Plan. 
+
+19/10/24:
+Completed a basic Kotlin application to get a basic level understanding of how it works. I have been reading articles and watching videos about how to make the UI as suitable as possible. 
+I have looked at the Material 3 design kit which seems to be a fantastic resource. For the AI feature I will look into spaCy and other pretrained models to see if any are suitable.
