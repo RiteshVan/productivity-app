@@ -13,3 +13,6 @@ I have been learning to use Kotlin and have tested some basic functions on an An
 19/10/24:
 Completed a basic Kotlin application to get a basic level understanding of how it works. I have been reading articles and watching videos about how to make the UI as suitable as possible. 
 I have looked at the Material 3 design kit which seems to be a fantastic resource. For the AI feature I will look into spaCy and other pretrained models to see if any are suitable.
+
+25/10/24:
+Completed splash screen code for application, will now concentrate on creating a logo with notebook and camera, to perfectly caputure the scope of the application, and conduct research as to how an app logo can help the user experience.
