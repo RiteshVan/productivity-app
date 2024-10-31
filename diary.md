@@ -16,3 +16,6 @@ I have looked at the Material 3 design kit which seems to be a fantastic resourc
 
 25/10/24:
 Completed splash screen code for application, will now concentrate on creating a logo with notebook and camera, to perfectly caputure the scope of the application, and conduct research as to how an app logo can help the user experience.
+
+25/10/24:
+Implemented a login page.
