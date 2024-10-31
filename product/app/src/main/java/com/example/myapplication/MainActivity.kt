@@ -1,12 +1,16 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -15,6 +19,18 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+
+        var usernameInput:EditText = findViewById(R.id.username_input)
+        var passwordInput:EditText = findViewById(R.id.password_input)
+        var login_button:Button = findViewById(R.id.login_button)
+
+
+        login_button.setOnClickListener{
+            val username = usernameInput.text.toString()
+            val password = passwordInput.text.toString()
+            Log.i("Test","username: $username  Password: $password")
         }
     }
 }
