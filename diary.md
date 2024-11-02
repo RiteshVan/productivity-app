@@ -19,3 +19,10 @@ Completed splash screen code for application, will now concentrate on creating a
 
 25/10/24:
 Implemented a login page.
+
+28/10/24:
+Figma work and interim report work.
+
+
+2/11/24:
+Implementing timer page. Need to fix progress bar issues and reset button.
