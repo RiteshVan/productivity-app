@@ -26,3 +26,6 @@ Figma work and interim report work.
 
 2/11/24:
 Implementing timer page. Need to fix progress bar issues and reset button.
+
+3/11/24:
+Completed figma diagram to understand and visualise flow of application. Colour decided for scientific reasons. Will soon begin to export to android studio and add one or two functions. Will then focus on report and learning and creating AI model to tag items. Also will look into to sleep analysis feature in order to boost productivity.
