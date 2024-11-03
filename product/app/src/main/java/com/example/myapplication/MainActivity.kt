@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -31,6 +32,12 @@ class MainActivity : AppCompatActivity() {
             val username = usernameInput.text.toString()
             val password = passwordInput.text.toString()
             Log.i("Test","username: $username  Password: $password")
+
+            if ((username == "user") && (password == "password")){
+                val Intent = Intent(this,TimerActivity::class.java)
+                startActivity(Intent)
+
+            }
         }
     }
 }
