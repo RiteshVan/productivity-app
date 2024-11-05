@@ -8,21 +8,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class MainActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_register)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        var startButton = findViewById<Button>(R.id.startButton)
-        startButton.setOnClickListener{
-            Intent intent = new Intent(this, RegisterActivity::class.java)
+
+        var signIn_Button = findViewById<Button>(R.id.signIn_buttonButton)
+        signIn_Button.setOnClickListener{
+            Intent intent = new Intent()
             startActivity(intent)
 
         }
+
+
     }
 }
