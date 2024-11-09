@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_nav_button"
+        android:title="Home"
+        android:icon="@drawable/baseline_dashboard_24"/>
+
+    <item
+        android:id="@+id/tasks_nav_button"
+        android:title="Tasks"
+        android:icon="@drawable/baseline_notes_24"/>
+
+    <item
+        android:title=""
+        android:enabled="true"
+        />
+
+    <item
+        android:id="@+id/timer_nav_button"
+        android:title="Timer"
+        android:icon="@drawable/baseline_access_time_24"/>
+
+    <item
+        android:id="@+id/setting_nav_button"
+        android:title="Settings"
+        android:icon="@drawable/baseline_settings_24"
+        />
+
+
+
+
+
+</menu>
