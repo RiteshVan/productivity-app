@@ -31,4 +31,4 @@ Implementing timer page. Need to fix progress bar issues and reset button.
 Completed figma diagram to understand and visualise flow of application. Colour decided for scientific reasons. Will soon begin to export to android studio and add one or two functions. Will then focus on report and learning and creating AI model to tag items. Also will look into to sleep analysis feature in order to boost productivity.
 
 9/11/24:
-Nav bars created. Will use frangments going forwards.
+Nav bars created. Will use fragments going forwards.
