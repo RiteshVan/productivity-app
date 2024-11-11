@@ -32,3 +32,6 @@ Completed figma diagram to understand and visualise flow of application. Colour 
 
 9/11/24:
 Nav bars created. Will use fragments going forwards.
+
+11/11/24:
+Hugging face used for AI tags feature. Key issues are that some tags are very similar so maybe should ensure they are more distinct, as there can be overlaps.
