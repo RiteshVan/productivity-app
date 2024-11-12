@@ -35,3 +35,6 @@ Nav bars created. Will use fragments going forwards.
 
 11/11/24:
 Hugging face used for AI tags feature. Key issues are that some tags are very similar so maybe should ensure they are more distinct, as there can be overlaps.
+
+12/11/24:
+Fragment switching implemented.
