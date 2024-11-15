@@ -38,3 +38,7 @@ Hugging face used for AI tags feature. Key issues are that some tags are very si
 
 12/11/24:
 Fragment switching implemented.
+
+13/11/24:
+Hugging face implemented in flask, timer page dropdown implemented.
+
