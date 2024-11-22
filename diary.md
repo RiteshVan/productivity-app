@@ -42,3 +42,6 @@ Fragment switching implemented.
 13/11/24:
 Hugging face implemented in flask, timer page dropdown implemented.
 
+15-22/11/24:
+Database work, made UI look more nice to use. Will work on timer page next.
+
