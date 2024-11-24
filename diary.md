@@ -45,3 +45,6 @@ Hugging face implemented in flask, timer page dropdown implemented.
 15-22/11/24:
 Database work, made UI look more nice to use. Will work on timer page next.
 
+23/11/24:
+Tags feature with flask backend has been implemented into app properly.
+
