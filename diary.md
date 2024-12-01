@@ -48,3 +48,11 @@ Database work, made UI look more nice to use. Will work on timer page next.
 23/11/24:
 Tags feature with flask backend has been implemented into app properly.
 
+25/11/24:
+Proximity sensor feature.
+
+28/11/24:
+COmpleted supervisor meeting and will act on advice given.
+
+29/11/24:
+Will look into creating a leaderboard feature if time permits.
