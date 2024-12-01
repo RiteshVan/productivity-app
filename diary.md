@@ -16,3 +16,43 @@ I have looked at the Material 3 design kit which seems to be a fantastic resourc
 
 25/10/24:
 Completed splash screen code for application, will now concentrate on creating a logo with notebook and camera, to perfectly caputure the scope of the application, and conduct research as to how an app logo can help the user experience.
+
+26/10/24:
+Implemented a login page.
+
+28/10/24:
+Figma work and interim report work.
+
+
+2/11/24:
+Implementing timer page. Need to fix progress bar issues and reset button.
+
+3/11/24:
+Completed figma diagram to understand and visualise flow of application. Colour decided for scientific reasons. Will soon begin to export to android studio and add one or two functions. Will then focus on report and learning and creating AI model to tag items. Also will look into to sleep analysis feature in order to boost productivity.
+
+9/11/24:
+Nav bars created. Will use fragments going forwards.
+
+11/11/24:
+Hugging face used for AI tags feature. Key issues are that some tags are very similar so maybe should ensure they are more distinct, as there can be overlaps.
+
+12/11/24:
+Fragment switching implemented.
+
+13/11/24:
+Hugging face implemented in flask, timer page dropdown implemented.
+
+15-22/11/24:
+Database work, made UI look more nice to use. Will work on timer page next.
+
+23/11/24:
+Tags feature with flask backend has been implemented into app properly.
+
+25/11/24:
+Proximity sensor feature.
+
+28/11/24:
+COmpleted supervisor meeting and will act on advice given.
+
+29/11/24:
+Will look into creating a leaderboard feature if time permits.
