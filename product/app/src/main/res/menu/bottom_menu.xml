@@ -3,32 +3,24 @@
 
     <item
         android:id="@+id/home_nav_button"
-        android:title="Home"
-        android:icon="@drawable/baseline_dashboard_24"/>
+        android:icon="@drawable/home_icon"/>
 
     <item
         android:id="@+id/tasks_nav_button"
-        android:title="Tasks"
-        android:icon="@drawable/baseline_notes_24"/>
 
-    <item
-        android:title=""
-        android:enabled="true"
-        />
+        android:icon="@drawable/note_icon"/>
+
+
 
     <item
         android:id="@+id/timer_nav_button"
-        android:title="Timer"
-        android:icon="@drawable/baseline_access_time_24"/>
+
+        android:icon="@drawable/timer_icon"/>
 
     <item
         android:id="@+id/setting_nav_button"
-        android:title="Settings"
-        android:icon="@drawable/baseline_settings_24"
+
+        android:icon="@drawable/setting_icon"
         />
-
-
-
-
 
 </menu>

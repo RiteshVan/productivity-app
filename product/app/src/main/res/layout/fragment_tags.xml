@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TagsFragment">
+
+
+    <EditText
+        android:id="@+id/tags_input"
+        android:layout_width="wrap_content"
+        android:layout_height="93dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="266dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="492dp"
+        android:padding="2dp"
+        android:hint="Input"
+        android:background="@drawable/curved_corners"
+        android:textSize="12dp" />
+
+    <TextView
+        android.text=""
+        android:padding="2dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:id="@+id/tags_output"
+        android:layout_width="500px"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="426dp"
+        android:layout_marginEnd="110dp"
+        android:layout_marginBottom="337dp"
+        android:background="@drawable/curved_corners"
+        android:hint="Output"
+        android:textSize="12dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="145dp"
+        android:layout_marginBottom="240dp"
+        android:text="Get Label"
+        android:id="@+id/label_button" />
+
+</RelativeLayout>
