@@ -56,3 +56,6 @@ COmpleted supervisor meeting and will act on advice given.
 
 29/11/24:
 Will look into creating a leaderboard feature if time permits.
+
+2/12/24:
+Completed leaderboard feature.
