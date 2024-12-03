@@ -21,7 +21,7 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
 
     //Activity is initialised
     override fun onCreate(savedInstanceState: Bundle?) {
-       
+
 
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)

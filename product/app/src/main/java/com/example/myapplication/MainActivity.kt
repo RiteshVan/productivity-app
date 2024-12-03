@@ -1,73 +1,38 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.example.myapplication.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private lateinit var fragmentManager: FragmentManager
-    private lateinit var binding: ActivityMainBinding
+//Start point of application
+class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+
         enableEdgeToEdge()
-        setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,binding.toolbar,R.string.nav_open,R.string.nav_open)
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        //Sets layout for opening page
+        setContentView(R.layout.activity_main)
 
-        binding.navigationDrawer.setNavigationItemSelectedListener(this)
-        binding.bottomNav.background=null
-
-        binding.bottomNav.setOnItemSelectedListener { item ->
-            when(item.itemId){
-
-                R.id.home_nav_button->startFragment(HomeFragment())
-
-                R.id.timer_nav_button-> startFragment(TimerFragment())
-                R.id.setting_nav_button -> startFragment(TagsFragment())
-                R.id.tasks_nav_button -> startFragment(TasksFragment())
-            }
-            true
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
-        fragmentManager = supportFragmentManager
-        startFragment(HomeFragment())
-    }
 
+        //Assigns image button to variable so it can be used in listener
+        val startButton = findViewById<ImageButton>(R.id.startButton)
 
-
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else{
-            super.onBackPressedDispatcher.onBackPressed()
+        //When button is clicked the user is sent to the register page of the app
+        startButton.setOnClickListener{
+            val intent = Intent(this,HomeActivity::class.java)
+            startActivity(intent)
         }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    private fun startFragment(fragment: Fragment){
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container,fragment)
-        fragmentTransaction.commit()
-
     }
 }
