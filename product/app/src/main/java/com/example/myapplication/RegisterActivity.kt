@@ -37,7 +37,7 @@ class RegisterActivity : AppCompatActivity() {
 
         //Listener checks for click and redirects user to sign in page
         signInButton.setOnClickListener{
-            val intent = Intent(this,HomeActivity::class.java)
+            val intent = Intent(this,SignInActivity::class.java)
             startActivity(intent)
         }
 
