@@ -7,54 +7,36 @@
 
 
     <EditText
-        android:id="@+id/tags_input"
         android:layout_width="wrap_content"
-        android:layout_height="93dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
+        android:id="@+id/tag_input"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:layout_marginStart="129dp"
-        android:layout_marginTop="266dp"
-        android:layout_marginEnd="104dp"
-        android:layout_marginBottom="492dp"
-        android:padding="2dp"
-        android:hint="Input"
-        android:background="@drawable/curved_corners"
-        android:textSize="12dp" />
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="545dp"
+        android:hint="ENTER"
+        android:textSize="25sp" />
 
     <TextView
-        android.text=""
-        android:padding="2dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:id="@+id/tags_output"
-        android:layout_width="500px"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="426dp"
-        android:layout_marginEnd="110dp"
-        android:layout_marginBottom="337dp"
-        android:background="@drawable/curved_corners"
-        android:hint="Output"
-        android:textSize="12dp" />
-
-    <Button
+        android:id="@+id/testing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="145dp"
-        android:layout_marginBottom="240dp"
-        android:text="Get Label"
-        android:id="@+id/label_button" />
+        android:layout_marginEnd="124dp"
+        android:layout_marginBottom="432dp"
+        android:text="Testing"
+        android:textSize="40sp" />
+
+    <Button
+        android:id="@+id/cf_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="111dp"
+        android:layout_marginBottom="248dp"
+        android:text="Classify"
+        android:textSize="30dp" />
 
 </RelativeLayout>
