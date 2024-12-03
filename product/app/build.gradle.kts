@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.squareup.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.cardview)
