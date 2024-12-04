@@ -46,7 +46,7 @@ class TagsFragment : Fragment() {
         cfButton.setOnClickListener() {
             val formBody:RequestBody = FormBody.Builder().add("value",inputText.text.toString()).build()
 
-            val request = Request.Builder().url("http://192.168.1.25:5000/classify").post(formBody).build()
+            val request = Request.Builder().url(/*update when running flask app*/).post(formBody).build()
 
             okHttpClient.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
