@@ -6,12 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TasksFragment">
 
-
-    <!--View to hold task items-->
-
-
-    <!--Button used to add tasks-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasksView"
         android:layout_width="match_parent"
