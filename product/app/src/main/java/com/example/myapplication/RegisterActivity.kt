@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat
 //Register page where users can sign up or move to sign in screen
 class RegisterActivity : AppCompatActivity() {
 
+    private lateinit var db: LoginDetailsDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -31,6 +33,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
 
+        db = LoginDetailsDatabase(this)
+
         //Assigns sign in image button to variable
         val signInButton = findViewById<ImageButton>(R.id.registered_sign_in)
 
@@ -41,8 +45,36 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val registerButton = findViewById<ImageButton>(R.id.register_button)
+
+        registerButton.setOnClickListener {
+            val usernameInput =  findViewById<EditText>(R.id.username_input)
+            val passwordInput =  findViewById<EditText>(R.id.password_input)
+
+            dbSignUp(usernameInput.text.toString(), passwordInput.text.toString())
+        }
+
+
 
     }
 
+    private fun dbSignUp(username: String , password: String) {
+
+        if (username.isNotEmpty() && password.isNotEmpty()) {
+            val insertQuery = db.addUser(username,password)
+            if (insertQuery){
+                Toast.makeText(this,"Sign up success!",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+                finish()
+            }else{
+                Toast.makeText(this,"Sign up error",Toast.LENGTH_SHORT).show()
+            }
+
+        }
+        else{
+            Toast.makeText(this,"Field(s) are empty",Toast.LENGTH_SHORT).show()
+        }
+    }
 
 }
