@@ -41,6 +41,7 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
                 R.id.timer_nav_button-> startFragment(TimerFragment())
                 R.id.setting_nav_button -> startFragment(TagsFragment())
                 R.id.tasks_nav_button -> startTaskFragment()
+                R.id.leaderboard_nav_button -> startFragment(LeaderboardFragment())
 
             }
             true
