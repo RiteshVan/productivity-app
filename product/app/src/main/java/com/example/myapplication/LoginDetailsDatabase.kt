@@ -56,4 +56,34 @@ class LoginDetailsDatabase(context: Context) : SQLiteOpenHelper(context,DB_NAME,
 
         return allowLogin
     }
+
+    fun updateTotalHours(username: String,hours:Int) {
+
+        val db = writableDatabase
+        val query = "UPDATE $TABLE_NAME SET total_hours = total_hours + ? WHERE $COLUMN_USERNAME = ?"
+
+        db.execSQL(query, arrayOf(hours,username))
+
+        db.close()
+    }
+
+    fun getLeaderboard():List<Pair<String,Int>> {
+
+        val leaderboard = mutableListOf<Pair<String,Int>>()
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_USERNAME, total_hours FROM $TABLE_NAME ORDER BY total_hours DESC"
+
+        val cursor = db.rawQuery(query,null)
+
+        while (cursor.moveToNext()){
+            val username = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME))
+            val hours = cursor.getInt(cursor.getColumnIndexOrThrow("total_hours"))
+            leaderboard.add(Pair(username,hours))
+        }
+
+        cursor.close()
+        db.close()
+        return leaderboard
+    }
+
 }
