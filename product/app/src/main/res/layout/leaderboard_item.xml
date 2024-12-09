@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/rank_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:text="1"
+            android:textSize="20sp"
+            android:fontFamily="@font/baloo"
+            />
+
+        <TextView
+            android:id="@+id/username_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/baloo"
+            android:text="Username"
+            android:textSize="18sp" />
+
+        <TextView
+            android:fontFamily="@font/baloo"
+            android:layout_marginEnd="30dp"
+            android:layout_gravity="center"
+            android:id="@+id/hours_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 hrs"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
