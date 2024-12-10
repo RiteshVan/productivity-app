@@ -87,6 +87,9 @@ class TaskDatabase(context: Context) :SQLiteOpenHelper(context, DB_NAME,null, DB
         }
         db.insert(TABLE_NAME_COMPLETED_TASKS, null, values)
 
+        val loginDB = LoginDetailsDatabase(context)
+        loginDB.updateTotalHours(username,task.hoursTaken)
+
         //delete task
         val whereClause = "$COLUMN_TITLE = ? AND $COLUMN_TAGS = ? AND $COLUMN_HOURS = ?"
         val whereArgs = arrayOf(task.title, task.tag, task.hoursTaken.toString())

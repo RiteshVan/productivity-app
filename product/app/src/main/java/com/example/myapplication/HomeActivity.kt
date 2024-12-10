@@ -36,16 +36,13 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
         //Directs user to chosen fragment
         binding.bottomNav.setOnItemSelectedListener { item ->
             when(item.itemId){
-
                 R.id.home_nav_button->startHomeFragment()
                 R.id.timer_nav_button-> startFragment(TimerFragment())
                 R.id.setting_nav_button -> startFragment(TagsFragment())
                 R.id.tasks_nav_button -> startTaskFragment()
                 R.id.leaderboard_nav_button -> startFragment(LeaderboardFragment())
-
             }
             true
-
         }
         fragmentManager = supportFragmentManager
 

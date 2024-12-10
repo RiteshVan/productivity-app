@@ -20,7 +20,8 @@ class LoginDetailsDatabase(context: Context) : SQLiteOpenHelper(context,DB_NAME,
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID integer primary key autoincrement, " +
                 "$COLUMN_USERNAME text, " +
-                "$COLUMN_PASSWORD text, "
+                "$COLUMN_PASSWORD text, " +
+                "total_hours INTEGER DEFAULT 0)"
 
         db?.execSQL(createTableQuery)
     }
