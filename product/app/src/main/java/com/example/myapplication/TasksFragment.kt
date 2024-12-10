@@ -25,6 +25,7 @@ class TasksFragment : Fragment() {
     private  var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var usernameText: String
     private lateinit var db:TaskDatabase
     private lateinit var tasksAdapter:TasksAdapter
 
@@ -47,7 +48,7 @@ class TasksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = TaskDatabase(requireContext())
-        tasksAdapter= TasksAdapter(db.getTasks(),requireContext())
+        tasksAdapter= TasksAdapter(db.getTasks(),requireContext(),usernameText)
 
         val tasksView =binding.tasksView
         tasksView.layoutManager = LinearLayoutManager(requireContext())

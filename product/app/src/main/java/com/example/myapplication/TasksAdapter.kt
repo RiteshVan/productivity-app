@@ -10,7 +10,7 @@ import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class TasksAdapter(private var tasks: List<Task>,context: Context) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(private var tasks: List<Task>,context: Context,private val usernameText: String) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
     private val db:TaskDatabase = TaskDatabase(context)
 
@@ -33,7 +33,7 @@ class TasksAdapter(private var tasks: List<Task>,context: Context) : RecyclerVie
         holder.titleTextView.text = task.title
 
         holder.checkBox.setOnClickListener{
-            db.deleteTask(task)
+            db.deleteTask(task,usernameText)
             refreshData(db.getTasks())
         }
     }

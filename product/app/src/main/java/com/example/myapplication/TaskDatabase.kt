@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.ContactsContract.CommonDataKinds.Note
 
 //Database helper to hold tasks
-class TaskDatabase(context: Context) :SQLiteOpenHelper(context, DB_NAME,null, DB_VERSION) {
+class TaskDatabase(private val context: Context) :SQLiteOpenHelper(context, DB_NAME,null, DB_VERSION) {
 
     companion object {
         private const val DB_NAME = "tasks_holder.db"
@@ -76,7 +76,7 @@ class TaskDatabase(context: Context) :SQLiteOpenHelper(context, DB_NAME,null, DB
         return tasksList
     }
 
-    fun deleteTask(task:Task){
+    fun deleteTask(task:Task,username:String){
         val db = writableDatabase
 
         //add task to completed database

@@ -26,6 +26,8 @@ class HomeFragment : Fragment() {
     private lateinit var tasksAdapter:TasksAdapter
     private lateinit var greeting:TextView
 
+    private lateinit var usernameText: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,10 +43,20 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        db = TaskDatabase(requireContext())
-        tasksAdapter= TasksAdapter(db.getTasks(),requireContext())
 
+        arguments?.let {
+            usernameText = it.getString("Username","")
+
+        }
+        super.onViewCreated(view, savedInstanceState)
+
+        super.onViewCreated(view, savedInstanceState)
+
+        //Initialise DB and task adapter
+        if (db == null) db = TaskDatabase(requireContext())
+        if (tasksAdapter == null) tasksAdapter= TasksAdapter(db!!.getTasks(),requireContext(),usernameText)
+
+        //Shows user message
         greeting = view.findViewById<TextView>(R.id.greeting)
         greeting.text = setGreeting()
 
