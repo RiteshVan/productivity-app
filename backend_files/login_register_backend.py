@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from flask_sqlalchemy import SQLAlchemy
 
 login_register_backend =  Flask(__name__)
@@ -26,12 +26,20 @@ def register():
     username = request.form['username']
     password = request.form['password']
 
-    new_user = User(username=username,password=password)
+    user_exists = User.query.filter_by(username=username).first()
 
-    db.session.add(new_user)
-    db.session.commit()
+    if user_exists:
+        return "Username taken"
+   
+    
+    else:
+        new_user = User(username=username, password=password)
 
-    return "User Added Successfully!"
+        db.session.add(new_user)
+        db.session.commit()
+
+        return "User Added Successfully!"
+
 
 #Checks user details then logs them in
 @login_register_backend.route('/login', methods=['POST'])
@@ -49,11 +57,9 @@ def login():
         
     else:
         return "User does not exist"
-
-        
+    
 
 if __name__ == '__main__':
     with login_register_backend.app_context():
         db.create_all()
     login_register_backend.run(port=5000)
-
