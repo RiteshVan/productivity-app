@@ -59,3 +59,6 @@ Will look into creating a leaderboard feature if time permits.
 
 2/12/24:
 Completed leaderboard feature.
+
+22/12/24:
+Setup raspberry pi to use as server for application to hold tasks, login details and AI feature. Needed feature as currently the login details are being kept on the phone itself which is not suitable
