@@ -22,6 +22,23 @@ def test():
     return "Task backend running"
 
 
+#Functionality to add task
+@tasks_backend.route("/add_task",methods=['POST'])
+def add_task():
+    title = request.form["title"]
+    tag = request.form["tag"]
+    hours_worked = request.form["hours_worked"]
+    username = request.form["username"]
+    
+    
+    new_task= Task(title=title,tag=tag,hours_worked=hours_worked,username=username)
+    
+    db.session.add(new_task)
+    db.session.commit()
+    
+    return "Successfully added task"
+
+
 if __name__ == '__main__':
     with tasks_backend.app_context():
         db.create_all()
