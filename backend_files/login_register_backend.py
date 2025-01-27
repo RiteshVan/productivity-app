@@ -20,5 +20,7 @@ def test():
     return 'Login Backend Operational'
 
 if __name__ == '__main__':
+    with login_register_backend.app_context():
+        db.create_all()
     login_register_backend.run(port=5000)
 
