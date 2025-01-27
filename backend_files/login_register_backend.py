@@ -33,6 +33,25 @@ def register():
 
     return "User Added Successfully!"
 
+#Checks user details then logs them in
+@login_register_backend.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+
+    existing_user = User.query.filter_by(username=username).first()
+
+    if existing_user:
+        if existing_user.password == password:
+            return "Logged in successfully"
+        else:
+            return "Incorrect username and password combination"
+        
+    else:
+        return "User does not exist"
+
+        
+
 if __name__ == '__main__':
     with login_register_backend.app_context():
         db.create_all()
