@@ -42,4 +42,4 @@ def add_task():
 if __name__ == '__main__':
     with tasks_backend.app_context():
         db.create_all()
-    tasks_backend.run(port=5000)
+    tasks_backend.run(port=4998)
