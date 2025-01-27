@@ -19,6 +19,20 @@ class User(db.Model):
 def test():
     return 'Login Backend Operational'
 
+
+#Register users
+@login_register_backend.route('/register', methods=['POST'])
+def register():
+    username = request.form['username']
+    password = request.form['password']
+
+    new_user = User(username=username,password=password)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return "User Added Successfully!"
+
 if __name__ == '__main__':
     with login_register_backend.app_context():
         db.create_all()
