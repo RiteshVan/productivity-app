@@ -1,4 +1,5 @@
 from flask import Flask,request
+import bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
 login_register_backend =  Flask(__name__)
@@ -11,14 +12,12 @@ db = SQLAlchemy(login_register_backend)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), primary_key=False)
-    password = db.Column(db.String(50), primary_key=False)
-
+    password = db.Column(db.String(128), primary_key=False)
 
 #Test connection
 @login_register_backend.route('/test')
 def test():
     return 'Login Backend Operational'
-
 
 #Register users
 @login_register_backend.route('/register', methods=['POST'])
@@ -28,12 +27,17 @@ def register():
 
     user_exists = User.query.filter_by(username=username).first()
 
+    password_bytes = password.encode('utf-8')
+
+    salt = bcrypt.gensalt()
+
+    hashed_password = bcrypt.hashpw(password_bytes,salt)
+
     if user_exists:
         return "Username taken"
-   
     
     else:
-        new_user = User(username=username, password=password)
+        new_user = User(username=username, password=hashed_password)
 
         db.session.add(new_user)
         db.session.commit()
@@ -49,12 +53,16 @@ def login():
 
     existing_user = User.query.filter_by(username=username).first()
 
+    password_bytes = password.encode('utf-8')
+
+    check_password_bytes = existing_user.password
+
+
     if existing_user:
-        if existing_user.password == password:
+        if bcrypt.checkpw(password_bytes,check_password_bytes):
             return "Logged in successfully"
         else:
-            return "Incorrect username and password combination"
-        
+            return "Incorrect username and password combination"    
     else:
         return "User does not exist"
     
