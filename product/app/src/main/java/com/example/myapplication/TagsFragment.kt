@@ -20,12 +20,7 @@ import java.io.IOException
 
 class TagsFragment : Fragment() {
 
-
-
-
     private lateinit var text:TextView
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -9,12 +9,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import okhttp3.FormBody
+import okhttp3.*
+import okhttp3.RequestBody
+import java.io.IOException
 
 
 //Register page where users can sign up or move to sign in screen
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var db: LoginDetailsDatabase
+    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,21 +63,24 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun dbSignUp(username: String , password: String) {
 
-        if (username.isNotEmpty() && password.isNotEmpty()) {
-            val insertQuery = db.addUser(username,password)
-            if (insertQuery){
-                Toast.makeText(this,"Sign up success!",Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, SignInActivity::class.java)
-                startActivity(intent)
-                finish()
-            }else{
-                Toast.makeText(this,"Sign up error",Toast.LENGTH_SHORT).show()
+        val formBody:RequestBody = FormBody.Builder()
+            .add("username",username)
+            .add("password",password)
+            .build()
+
+        val request = Request.Builder().url("http://127.0.0.1:5000").post(formBody).build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                    Toast.makeText(this@RegisterActivity,"Failed",Toast.LENGTH_SHORT).show()
             }
 
-        }
-        else{
-            Toast.makeText(this,"Field(s) are empty",Toast.LENGTH_SHORT).show()
-        }
+            override fun onResponse(call: Call, response: Response) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
     }
 
 }
