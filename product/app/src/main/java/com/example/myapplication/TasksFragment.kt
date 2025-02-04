@@ -1,6 +1,6 @@
 package com.example.myapplication
 
-import android.app.Fragment
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +14,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentTasksBinding
