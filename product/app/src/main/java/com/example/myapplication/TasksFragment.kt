@@ -19,15 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentTasksBinding
 import com.google.android.material.color.utilities.ToneDeltaPair
+import okhttp3.*
+import java.io.IOException
 
 
 class TasksFragment : Fragment() {
+
+    private val client = OkHttpClient()
 
     private  var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var usernameText: String
-    private lateinit var db:TaskDatabase
     private lateinit var tasksAdapter:TasksAdapter
 
     private lateinit var selectedTag:String
@@ -48,12 +51,7 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        db = TaskDatabase(requireContext())
-        tasksAdapter= TasksAdapter(db.getTasks(),requireContext(),usernameText)
 
-        val tasksView =binding.tasksView
-        tasksView.layoutManager = LinearLayoutManager(requireContext())
-        tasksView.adapter=tasksAdapter
 
         editTaskDialog()
 
@@ -63,7 +61,7 @@ class TasksFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        tasksAdapter.refreshData(db.getTasks())
+
     }
 
 
@@ -71,12 +69,14 @@ class TasksFragment : Fragment() {
     //Keeps log of tasks added
     private fun editTaskDialog(){
         binding.taskAdd.setOnClickListener(){
-            db = TaskDatabase(requireContext())
+           
 
             val builder =AlertDialog.Builder(requireContext())
             val inflater = layoutInflater
             val dialogLayout =inflater.inflate(R.layout.new_task_add_dialog,null)
             val editText = dialogLayout.findViewById<EditText>(R.id.task_add_text)
+
+            //Choose tag from spinner
             val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
             val listTags = listOf("Work","Exercise","Personal","Shopping","Uni  Work","Gardening")
 
@@ -97,6 +97,8 @@ class TasksFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
+                    //Used to handle case for no selection
+                    //Not needed for this implementation
 
                 }
 
@@ -124,7 +126,8 @@ class TasksFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                    //Used to handle case for no selection
+                    //Not needed for this implementation
                 }
 
             }
@@ -134,11 +137,52 @@ class TasksFragment : Fragment() {
             with(builder){
                 setTitle("Add Task")
                 setPositiveButton("OK"){dialog ,which->
-                    tasksAdapter.refreshData(db.getTasks())
-                    Log.d("Tasks","editText.text.toString()")
                     val title = editText.text.toString()
-                    db.addTask(Task(title,selectedTag,selectedTime.toInt()))
-                    tasksAdapter.refreshData(db.getTasks())
+
+                    val formBody = FormBody.Builder()
+                        .add("title",title)
+                        .add("tag",selectedTag)
+                        .add("hours",selectedTime)
+                        .add("username","testUser")
+                        .build()
+
+                    val request = Request.Builder()
+                        .url("http://192.168.1.112:5000/add_task")
+                        .post(formBody)
+                        .build()
+
+                    client.newCall(request).enqueue(object : Callback{
+                        override fun onFailure(call: Call, e: IOException) {
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            try {
+                                if (response.isSuccessful) {
+                                    requireActivity().runOnUiThread {
+                                        val responseBody = response.body?.string()
+
+                                        Toast.makeText(
+                                            requireContext(),responseBody,Toast.LENGTH_SHORT)
+                                            .show()
+
+
+                                    }
+                                }
+                            } catch (e:Exception) {
+                                Toast.makeText(
+                                    requireContext(),"response error",Toast.LENGTH_SHORT)
+                                    .show()
+
+                            } finally {
+                                response.close()
+                            }
+                        }
+
+                    })
+
                 }
                 setNegativeButton("Cancel"){dialog ,which->
                     Log.d("Tasks","cancelled")
