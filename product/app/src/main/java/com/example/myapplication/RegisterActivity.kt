@@ -18,12 +18,7 @@ import java.io.IOException
 
 //Register page where users can sign up or move to sign in screen
 class RegisterActivity : AppCompatActivity() {
-
-
     private val client = OkHttpClient()
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -86,7 +81,7 @@ class RegisterActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@RegisterActivity,"Nope",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterActivity,"Error",Toast.LENGTH_SHORT).show()
                 }
             }
 

@@ -9,12 +9,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import okhttp3.*
+import java.io.IOException
 
 
 //Activity wheres users can login with their details and proceed to main application
 class SignInActivity : AppCompatActivity() {
 
-    private lateinit var db:LoginDetailsDatabase
+    private val client = OkHttpClient()
 
     private lateinit var usernameText: String
 
@@ -33,7 +35,7 @@ class SignInActivity : AppCompatActivity() {
             insets
         }
 
-        db = LoginDetailsDatabase(this)
+
 
         val signIn = findViewById<ImageButton>(R.id.sign_in)
 
@@ -53,18 +55,54 @@ class SignInActivity : AppCompatActivity() {
 
 
     private fun login(username:String,password:String) {
-        val userIsPresent = db.verifyUser(username,password)
+        val formBody:RequestBody = FormBody.Builder()
+            .add("username",username)
+            .add("password",password)
+            .build()
 
-        if (userIsPresent) {
-            Toast.makeText(this,"Login successful!",Toast.LENGTH_SHORT).show()
-            val intent = Intent(this,HomeActivity::class.java)
-            intent.putExtra("Username",username)
-            startActivity(intent)
-            finish()
-        }
-        else{
-            Toast.makeText(this,"Login unsuccessful!",Toast.LENGTH_SHORT).show()
-        }
+        val request = Request.Builder()
+            .url("http://192.168.1.112:5000/login")
+            .post(formBody)
+            .build()
+
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@SignInActivity,"Error",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+               try {
+                   if (response.isSuccessful) {
+                       val responseBody = response.body?.string()
+
+                       if (responseBody=="Logged in successfully") {
+                           runOnUiThread {
+                               Toast.makeText(this@SignInActivity,responseBody,Toast.LENGTH_SHORT).show()
+                               val intent = Intent(this@SignInActivity,HomeActivity::class.java)
+                               startActivity(intent)
+                           }
+                       } else {
+                           Toast.makeText(this@SignInActivity,responseBody,Toast.LENGTH_SHORT).show()
+                       }
+                   }
+
+               } catch (e:Exception) {
+
+                   runOnUiThread {
+                       Toast.makeText(this@SignInActivity,"Response error",Toast.LENGTH_SHORT).show()
+                   }
+
+               } finally {
+                   response.close()
+               }
+            }
+
+
+        })
+
     }
 
 
