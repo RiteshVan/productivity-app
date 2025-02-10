@@ -88,16 +88,27 @@ class RegisterActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 try{
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         val responseBody = response.body?.string()
-                        runOnUiThread {
-                            Toast.makeText(this@RegisterActivity,responseBody,Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this@RegisterActivity,SignInActivity::class.java)
-                            startActivity(intent)
-                        }
-                    } else{
-                        runOnUiThread {
-                            Toast.makeText(this@RegisterActivity,"Error: ${response.code}",Toast.LENGTH_SHORT).show()
+                        if (responseBody == "User Added Successfully!") {
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    responseBody,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent =
+                                    Intent(this@RegisterActivity, SignInActivity::class.java)
+                                startActivity(intent)
+                            }
+                        } else {
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    responseBody,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 } catch (e:Exception) {
