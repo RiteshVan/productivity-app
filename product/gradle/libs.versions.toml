@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.7.2"
 cardviewVersion = "1.0.0"
 githubEazegraph = "1.2.2"
 kotlin = "1.9.24"
