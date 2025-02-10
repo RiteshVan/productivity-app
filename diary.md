@@ -65,3 +65,6 @@ Setup raspberry pi to use as server for application to hold tasks, login details
 
 1/2/25:
 Added code to create servers in Flask, need to add security features for login page and core code will be completed and ready for Kotlin implementation.
+
+5/2/25 - 10/2/25:
+Updated Kotlin code to work with new backend
