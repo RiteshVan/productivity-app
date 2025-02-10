@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
     private  var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var db:TaskDatabase
+
     private lateinit var tasksAdapter:TasksAdapter
     private lateinit var greeting:TextView
 
@@ -53,8 +53,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //Initialise DB and task adapter
-        if (db == null) db = TaskDatabase(requireContext())
-        if (tasksAdapter == null) tasksAdapter= TasksAdapter(db!!.getTasks(),requireContext(),usernameText)
 
         //Shows user message
         greeting = view.findViewById<TextView>(R.id.greeting)
@@ -66,49 +64,6 @@ class HomeFragment : Fragment() {
 
 
     private fun setChart(){
-
-        val workHours = db.getTotalHoursForTag("Work").toFloat()
-        val personalHours = db.getTotalHoursForTag("Personal").toFloat()
-        val exerciseHours = db.getTotalHoursForTag("Exercise").toFloat()
-        val shoppingHours = db.getTotalHoursForTag("Shopping").toFloat()
-        val uniWorkHours = db.getTotalHoursForTag("Uni Work").toFloat()
-        val gardeningHours = db.getTotalHoursForTag("Gardening").toFloat()
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Work",workHours,Color.parseColor("#FF0000")
-            )
-        )
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Personal",personalHours,Color.parseColor("#FFFF00")
-            )
-        )
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Exercise",exerciseHours,Color.parseColor("#FFA500")
-            )
-        )
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Shopping",shoppingHours,Color.parseColor("#29B6F6")
-            )
-        )
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Uni_Work",uniWorkHours,Color.parseColor("#00008B")
-            )
-        )
-
-        pieChart.addPieSlice(
-            PieModel(
-                "Gardening",gardeningHours,Color.parseColor("#008000")
-            )
-        )
 
         pieChart.animate()
 
@@ -135,7 +90,6 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        tasksAdapter.refreshData(db.getTasks())
     }
 
 }

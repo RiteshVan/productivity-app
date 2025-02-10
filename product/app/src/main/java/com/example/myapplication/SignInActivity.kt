@@ -74,33 +74,46 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-               try {
-                   if (response.isSuccessful) {
-                       val responseBody = response.body?.string()
+                runOnUiThread {
+                    try {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body?.string()
 
-                       if (responseBody=="Logged in successfully") {
-                           runOnUiThread {
-                               Toast.makeText(this@SignInActivity,responseBody,Toast.LENGTH_SHORT).show()
-                               val intent = Intent(this@SignInActivity,HomeActivity::class.java)
-                               startActivity(intent)
-                           }
-                       } else {
-                           Toast.makeText(this@SignInActivity,responseBody,Toast.LENGTH_SHORT).show()
-                       }
-                   }
+                            if (responseBody == "Logged in successfully") {
 
-               } catch (e:Exception) {
+                                Toast.makeText(
+                                    this@SignInActivity,
+                                    responseBody,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(this@SignInActivity, HomeActivity::class.java)
+                                startActivity(intent)
 
-                   runOnUiThread {
-                       Toast.makeText(this@SignInActivity,"Response error",Toast.LENGTH_SHORT).show()
-                   }
+                            } else {
+                                Toast.makeText(
+                                    this@SignInActivity,
+                                    responseBody,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
 
-               } finally {
-                   response.close()
-               }
+                    } catch (e: Exception) {
+
+
+                            Toast.makeText(
+                                this@SignInActivity,
+                                "Response error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+
+                    } finally {
+                        response.close()
+                    }
+                }
+
             }
-
-
         })
 
     }

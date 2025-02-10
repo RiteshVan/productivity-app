@@ -22,7 +22,6 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
     //Activity is initialised
     override fun onCreate(savedInstanceState: Bundle?) {
 
-
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -36,13 +35,16 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
         //Directs user to chosen fragment
         binding.bottomNav.setOnItemSelectedListener { item ->
             when(item.itemId){
+
                 R.id.home_nav_button->startHomeFragment()
+
                 R.id.timer_nav_button-> startFragment(TimerFragment())
                 R.id.setting_nav_button -> startFragment(TagsFragment())
-
+                R.id.tasks_nav_button -> startTaskFragment()
                 R.id.leaderboard_nav_button -> startFragment(LeaderboardFragment())
             }
             true
+
         }
         fragmentManager = supportFragmentManager
 
@@ -67,6 +69,15 @@ class HomeActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelect
 
     }
 
+    private fun startTaskFragment(){
+        val tasksFragment = TasksFragment()
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,tasksFragment)
+            .commit()
+
+
+
+    }
 
 
     private fun startHomeFragment() {
