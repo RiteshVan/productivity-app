@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentTasksBinding
 import com.google.android.material.color.utilities.ToneDeltaPair
 import okhttp3.*
+import org.json.JSONObject
 import java.io.IOException
 
 
@@ -31,8 +32,8 @@ class TasksFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var usernameText: String
-    private lateinit var tasksAdapter:TasksAdapter
 
+    private lateinit var tasksAdapter:TasksAdapter
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
 
@@ -69,8 +70,6 @@ class TasksFragment : Fragment() {
     //Keeps log of tasks added
     private fun editTaskDialog(){
         binding.taskAdd.setOnClickListener(){
-           
-
             val builder =AlertDialog.Builder(requireContext())
             val inflater = layoutInflater
             val dialogLayout =inflater.inflate(R.layout.new_task_add_dialog,null)
@@ -197,4 +196,68 @@ class TasksFragment : Fragment() {
 
     }
 
+    //Refresh tasks from backend
+    private fun refreshTasksList() {
+        val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks").build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        val tasks = getTasks(responseBody)
+
+                        requireActivity().runOnUiThread{
+                            tasksAdapter.refreshData(tasks)
+                        }
+
+                    } else {
+                        Toast.makeText(requireContext(),"Failed to fetch tasks",Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception){
+                    requireActivity().runOnUiThread{
+                        Toast.makeText(requireContext(),"Response error",Toast.LENGTH_SHORT).show()
+
+                    }
+                } finally {
+                    response.close()
+                }
+            }
+
+
+        })
+
+    }
+
+
+    private fun getTasks(responseBody: String?) : List<Task> {
+        val tasks = mutableListOf<Task>()
+
+        if (responseBody != null) {
+            val json = JSONObject(responseBody)
+            val tasksArray = json.getJSONArray("tasks")
+
+            for (i in 0 until tasksArray.length()) {
+                val taskObject = tasksArray.getJSONObject(i)
+                val task = Task(
+                    taskObject.getInt("id"),
+                    taskObject.getString("title"),
+                    taskObject.getString("tag"),
+                    taskObject.getInt("hours"),
+                    taskObject.getString("username")
+                )
+
+                tasks.add(task)
+            }
+        }
+
+        return tasks
+
+    }
 }

@@ -6,13 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.view.menu.MenuView.ItemView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import java.io.IOException
+import kotlin.contracts.contract
 
 
-class TasksAdapter(private var tasks: List<Task>,context: Context,private val usernameText: String) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
-    private val db:TaskDatabase = TaskDatabase(context)
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val titleTextView: TextView = itemView.findViewById(R.id.task_title)
@@ -33,14 +43,116 @@ class TasksAdapter(private var tasks: List<Task>,context: Context,private val us
         holder.titleTextView.text = task.title
 
         holder.checkBox.setOnClickListener{
-            db.deleteTask(task,usernameText)
-            refreshData(db.getTasks())
+            deleteTask(task.id)
         }
     }
 
-    fun refreshData(newTasks:List<Task>){
-        tasks = newTasks
-        notifyDataSetChanged()
 
+
+    private fun deleteTask(taskId : Int) {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("http://192.168.1.112:4998/delete_task/$taskId")
+            .delete()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                (context as? FragmentActivity)?.runOnUiThread {
+                    Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (response.isSuccessful) {
+                        (context as? FragmentActivity)?.runOnUiThread {
+                            Toast.makeText(context,"Task deleted",Toast.LENGTH_SHORT).show()
+                            refreshTasks()
+                        }
+                    } else {
+                        (context as? FragmentActivity)?.runOnUiThread {
+                            Toast.makeText(context,"Task not deleted",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e:Exception) {
+                    (context as? FragmentActivity)?.runOnUiThread {
+                        Toast.makeText(context, "Response error", Toast.LENGTH_SHORT).show()
+                    }
+                } finally {
+                    response.close()
+                }
+
+            }
+        })
+
+    }
+
+
+
+
+    fun refreshTasks() {
+        val client = OkHttpClient()
+
+        val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks").build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                (context as? FragmentActivity)?.runOnUiThread {
+                    Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+
+                        val newTasks = getTasks(responseBody)
+
+                        (context as? FragmentActivity)?.runOnUiThread{
+                            tasks =newTasks
+                            notifyDataSetChanged()
+                        }
+                    } else {
+                        (context as? FragmentActivity)?.runOnUiThread {
+                            Toast.makeText(context,"Failed to get tasks",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    (context as? FragmentActivity)?.runOnUiThread {
+                        Toast.makeText(context,"Response error",Toast.LENGTH_SHORT).show()
+                    }
+                } finally {
+                    response.close()
+                }
+            }
+
+        })
+
+    }
+
+
+    private fun getTasks(responseBody: String?) : List<Task> {
+        val tasks = mutableListOf<Task>()
+
+        if (responseBody != null) {
+            val json = JSONObject(responseBody)
+            val tasksArray = json.getJSONArray("tasks")
+
+            for (i in 0 until tasksArray.length()) {
+                val taskObject = tasksArray.getJSONObject(i)
+                val task = Task(
+                    taskObject.getInt("id"),
+                    taskObject.getString("title"),
+                    taskObject.getString("tag"),
+                    taskObject.getInt("hours"),
+                    taskObject.getString("username")
+                )
+
+                tasks.add(task)
+            }
+        }
+        return tasks
     }
 }
