@@ -1,6 +1,8 @@
 from flask import Flask,request
 import bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 login_register_backend =  Flask(__name__)
 
@@ -8,6 +10,13 @@ login_register_backend.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///login_regi
 login_register_backend.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(login_register_backend)
+
+limiter = Limiter(
+    app=login_register_backend,
+    key_func=get_remote_address,
+    default_limits=["100 per hour","7 per minute"]
+
+)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,7 +38,7 @@ def register():
 
     password_bytes = password.encode('utf-8')
 
-    salt = bcrypt.gensalt()
+    salt = bcrypt.gensalt(rounds=14)
 
     hashed_password = bcrypt.hashpw(password_bytes,salt)
 
@@ -70,4 +79,4 @@ def login():
 if __name__ == '__main__':
     with login_register_backend.app_context():
         db.create_all()
-    login_register_backend.run(port=5000)
+    login_register_backend.run(host='0.0.0.0',port=5000)
