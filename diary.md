@@ -68,3 +68,6 @@ Added code to create servers in Flask, need to add security features for login p
 
 5/2/25 - 10/2/25:
 Updated Kotlin code to work with new backend
+
+12/2/2025:
+Strengthened security and protected against potential brute force attacks by updating flask code for login/register backend
