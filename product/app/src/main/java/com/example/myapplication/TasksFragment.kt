@@ -22,6 +22,8 @@ import com.google.android.material.color.utilities.ToneDeltaPair
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import java.util.Date
+import kotlin.random.Random
 
 
 class TasksFragment : Fragment() {
@@ -45,8 +47,6 @@ class TasksFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding= FragmentTasksBinding.inflate(inflater,container,false)
-
-
         return binding.root
     }
 
@@ -54,10 +54,18 @@ class TasksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser")
+
+        val tasksView = binding.tasksView
+
+        tasksView.layoutManager = LinearLayoutManager(requireContext())
+
+        tasksView.adapter = tasksAdapter
+
+        refreshTasksList()
+
+
         editTaskDialog()
-
-
-
     }
 
     override fun onResume() {
@@ -138,7 +146,12 @@ class TasksFragment : Fragment() {
                 setPositiveButton("OK"){dialog ,which->
                     val title = editText.text.toString()
 
+                    val timestamp =  Date().time //Gives current time in ms
+                    val randomNumber = Random.nextInt(10000) //Selects random number up to 9999
+                    val uniqueID = "$timestamp$randomNumber"
+
                     val formBody = FormBody.Builder()
+                        .add("id",uniqueID)
                         .add("title",title)
                         .add("tag",selectedTag)
                         .add("hours",selectedTime)
@@ -164,7 +177,7 @@ class TasksFragment : Fragment() {
                                         val responseBody = response.body?.string()
 
                                         Toast.makeText(
-                                            requireContext(),responseBody,Toast.LENGTH_SHORT)
+                                            requireContext(),"added",Toast.LENGTH_SHORT)
                                             .show()
 
 
@@ -172,7 +185,7 @@ class TasksFragment : Fragment() {
                                 }
                             } catch (e:Exception) {
                                 Toast.makeText(
-                                    requireContext(),"response error",Toast.LENGTH_SHORT)
+                                    requireContext(),"Response error",Toast.LENGTH_SHORT)
                                     .show()
 
                             } finally {
@@ -214,7 +227,7 @@ class TasksFragment : Fragment() {
                         val tasks = getTasks(responseBody)
 
                         requireActivity().runOnUiThread{
-                            tasksAdapter.refreshData(tasks)
+                            tasksAdapter.refreshTasks()
                         }
 
                     } else {
