@@ -15,6 +15,14 @@ class Task(db.Model):
     hours = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(25), nullable=False)
 
+class CompletedTask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    tag = db.Column(db.String(25), nullable=False)
+    hours = db.Column(db.Integer, nullable=False)
+    username = db.Column(db.String(25), nullable=False)
+
+
 
 #Test connection
 @tasks_backend.route("/test") 
@@ -38,6 +46,31 @@ def add_task():
     
     return "Successfully added task"
 
+
+@tasks_backend.route("/delete_task/<int:task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    task = Task.query.get(task_id)
+
+    if task:
+
+        completed_task = CompletedTask(
+            id=task.id,
+            title=task.title,
+            tag=task.tag,
+            hours=task.hours,
+            username=task.username
+        )
+
+        db.session.add(completed_task)
+
+        db.session.delete(task)
+        db.session.commit()
+
+        return {'message':f"Task {task_id} deleted"}
+    else:
+        return {"error":"Task not deleted"}
+    
+
 @tasks_backend.route("/get_tasks")
 def get_tasks():
     tasks = Task.query.all()
@@ -55,7 +88,25 @@ def get_tasks():
 
     return {"tasks":task_list}
 
+@tasks_backend.route("/get_completed_tasks")
+def get_completed_tasks():
+    completed_tasks = CompletedTask.query.all()
+
+    completed_task_list = [{
+
+        'id':task.id,
+        'title':task.title,
+        'tag':task.tag,
+        'hours':task.hours,
+        'username':task.username
+
+    }
+    for task in completed_tasks
+    ]
+
+    return {"completed_tasks":completed_task_list}
+
 if __name__ == '__main__':
     with tasks_backend.app_context():
         db.create_all()
-    tasks_backend.run(port=4998)
+    tasks_backend.run(host='0.0.0.0',port=4998)
