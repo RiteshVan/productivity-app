@@ -77,3 +77,6 @@ Updated tasks code to work with new tasks backend.
 
 16/2/25:
 Used google offered tool to come up with ideas to make backend look more appealing.
+
+20/2/25:
+Added functionaity to store completed tasks in separate table.
