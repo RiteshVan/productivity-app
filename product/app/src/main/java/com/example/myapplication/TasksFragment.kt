@@ -2,6 +2,7 @@ package com.example.myapplication
 
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,13 +34,9 @@ class TasksFragment : Fragment() {
     private  var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var usernameText: String
-
     private lateinit var tasksAdapter:TasksAdapter
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
-
-
 
 
     override fun onCreateView(
@@ -117,7 +114,7 @@ class TasksFragment : Fragment() {
             val listHours = listOf("1","2","3","4","5")
 
             val arrayAdapterHours = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listHours)
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            arrayAdapterHours.setDropDownViewResource(android.R.layout.simple_spinner_item)
 
             time.adapter = arrayAdapterHours
 
@@ -136,8 +133,29 @@ class TasksFragment : Fragment() {
                     //Used to handle case for no selection
                     //Not needed for this implementation
                 }
-
             }
+
+            editText.addTextChangedListener(object : android.text.TextWatcher{
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    val taskText = p0.toString()
+
+                    if (taskText.isNotEmpty()) {
+                        classifyTask(taskText) { classifiedTag ->
+                            val selectedIndex = listTags.indexOf(classifiedTag)
+
+                            if (selectedIndex != -1) {
+                                tag.setSelection(selectedIndex)
+                            }                            }
+                    }
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                }
+            })
 
 
 
@@ -209,6 +227,8 @@ class TasksFragment : Fragment() {
 
     }
 
+
+
     //Refresh tasks from backend
     private fun refreshTasksList() {
         val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks").build()
@@ -242,10 +262,7 @@ class TasksFragment : Fragment() {
                     response.close()
                 }
             }
-
-
         })
-
     }
 
 
@@ -265,7 +282,6 @@ class TasksFragment : Fragment() {
                     taskObject.getInt("hours"),
                     taskObject.getString("username")
                 )
-
                 tasks.add(task)
             }
         }
@@ -273,4 +289,30 @@ class TasksFragment : Fragment() {
         return tasks
 
     }
+
+    private fun classifyTask(taskItem : String, callback: (String) -> Unit) {
+
+
+        val formBody = FormBody.Builder().add("value",taskItem).build()
+
+        val request = Request.Builder().url("add later").post(formBody).build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                //To handle in case of backend error
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val tag = response.body?.string() ?: "Not found"
+
+                    requireActivity().runOnUiThread {
+                        callback(tag)
+                    }
+                }
+            }
+        })
+
+    }
+
 }
