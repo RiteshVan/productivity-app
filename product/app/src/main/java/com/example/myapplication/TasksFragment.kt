@@ -3,6 +3,7 @@ package com.example.myapplication
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -135,29 +136,19 @@ class TasksFragment : Fragment() {
                 }
             }
 
-            editText.addTextChangedListener(object : android.text.TextWatcher{
+            editText.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+                    //Not needed fot this implementation
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    val taskText = p0.toString()
-
-                    if (taskText.isNotEmpty()) {
-                        classifyTask(taskText) { classifiedTag ->
-                            val selectedIndex = listTags.indexOf(classifiedTag)
-
-                            if (selectedIndex != -1) {
-                                tag.setSelection(selectedIndex)
-                            }                            }
-                    }
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
+                    classifyTask(editText.text.toString())
                 }
+
             })
-
-
 
             with(builder){
                 setTitle("Add Task")
@@ -290,29 +281,30 @@ class TasksFragment : Fragment() {
 
     }
 
-    private fun classifyTask(taskItem : String, callback: (String) -> Unit) {
+    private fun classifyTask(taskTitle: String) {
+        val formBody = FormBody.Builder().add("value",taskTitle).build()
 
-
-        val formBody = FormBody.Builder().add("value",taskItem).build()
-
-        val request = Request.Builder().url("add later").post(formBody).build()
+        val request = Request.Builder().url("http://192.168.1.112:4999/classify").post(formBody).build()
 
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call, e: IOException) {
-                //To handle in case of backend error
+                //Handle errors
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val tag = response.body?.string() ?: "Not found"
-
-                    requireActivity().runOnUiThread {
-                        callback(tag)
-                    }
+                if (response.isSuccessful){
+                    Toast.makeText(requireContext(),"response.body?.toString()",Toast.LENGTH_LONG).show()
+                }
+                 else {
+                Toast.makeText(requireContext(),"not working",Toast.LENGTH_LONG).show()
                 }
             }
+
+
         })
 
-    }
 
+
+
+    }
 }
