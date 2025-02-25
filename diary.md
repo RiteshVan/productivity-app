@@ -80,3 +80,6 @@ Used google offered tool to come up with ideas to make backend look more appeali
 
 20/2/25:
 Added functionaity to store completed tasks in separate table.
+
+24/2/25:
+Added backend functionality to store images next need to integrate with application.
