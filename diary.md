@@ -83,3 +83,6 @@ Added functionaity to store completed tasks in separate table.
 
 24/2/25:
 Added backend functionality to store images next need to integrate with application.
+
+26/2/25:
+Can now upload images from app to backend
