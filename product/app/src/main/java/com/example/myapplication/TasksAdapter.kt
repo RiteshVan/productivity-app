@@ -1,29 +1,47 @@
 package com.example.myapplication
 
+
+import kotlin.random.Random
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuView.ItemView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.ResponseBody
 import org.json.JSONObject
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.IOException
-import kotlin.contracts.contract
 
 
-class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
-
+class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String,private val cameraLauncher: ActivityResultLauncher<Intent>) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val titleTextView: TextView = itemView.findViewById(R.id.task_title)
         val checkBox:CheckBox = itemView.findViewById(R.id.task_check)
@@ -42,9 +60,38 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
         val task = tasks[position]
         holder.titleTextView.text = task.title
 
+
         holder.checkBox.setOnClickListener{
-            deleteTask(task.id)
+            Log.d("test","clicked")
+            taskCompletedDialog(task)
         }
+    }
+
+
+    private fun taskCompletedDialog(task: Task) {
+        AlertDialog.Builder(context)
+            .setTitle("Task picture?")
+            .setPositiveButton("Yes"){_,_->
+                openCamera(task.title)
+            }.setNegativeButton("No"){_,_->
+                deleteTask(task.id)
+            }.show()
+    }
+
+    private fun openCamera(taskTitle: String){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED) {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraLauncher.launch(intent)
+            var capturedTaskTitle:String = taskTitle
+        } else{
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.CAMERA),
+                100
+            )
+        }
+
     }
 
 

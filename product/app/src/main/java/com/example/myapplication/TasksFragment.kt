@@ -1,6 +1,9 @@
 package com.example.myapplication
 
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,6 +17,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -22,7 +27,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentTasksBinding
 import com.google.android.material.color.utilities.ToneDeltaPair
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Date
 import kotlin.random.Random
@@ -39,6 +47,62 @@ class TasksFragment : Fragment() {
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
 
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+        cameraLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+
+                    imageBitmap?.let {
+                        uploadImage(it,capturedTaskTitle)
+                    }
+
+                }
+
+            }
+    }
+
+    private fun uploadImage(bitmap: Bitmap,caption:String){
+
+        val randomNumber = Random.nextLong(10000) //Selects random number up to 99
+
+
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+        val byteArray = stream.toByteArray()
+
+        val requestBody = byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull())
+        val multipartBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("image","task-image$randomNumber.jpeg", requestBody)
+            .addFormDataPart("caption",caption)
+            .build()
+
+        val request = Request.Builder().url("http://192.168.1.112:4997/upload").post(multipartBody).build()
+
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                }
+                response.close()
+            }
+        })
+        }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +116,7 @@ class TasksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser")
+        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser",cameraLauncher)
 
         val tasksView = binding.tasksView
 
@@ -73,7 +137,6 @@ class TasksFragment : Fragment() {
 
 
     //Dialog popup to add task details
-    //Keeps log of tasks added
     private fun editTaskDialog(){
         binding.taskAdd.setOnClickListener(){
             val builder =AlertDialog.Builder(requireContext())
@@ -136,28 +199,28 @@ class TasksFragment : Fragment() {
                 }
             }
 
-            editText.addTextChangedListener(object : TextWatcher{
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    //Not needed fot this implementation
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
-
-                override fun afterTextChanged(p0: Editable?) {
-                    classifyTask(editText.text.toString())
-                }
-
-            })
+//            editText.addTextChangedListener(object : TextWatcher{
+//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                    //Not needed fot this implementation
+//                }
+//
+//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                }
+//
+//                override fun afterTextChanged(p0: Editable?) {
+//                    classifyTask(editText.text.toString())
+//                }
+//
+//            })
 
             with(builder){
                 setTitle("Add Task")
                 setPositiveButton("OK"){dialog ,which->
                     val title = editText.text.toString()
 
-                    val timestamp =  Date().time //Gives current time in ms
-                    val randomNumber = Random.nextInt(10000) //Selects random number up to 9999
-                    val uniqueID = "$timestamp$randomNumber"
+
+                    val randomNumber = Random.nextLong(10000) //Selects random number up to 99
+                    val uniqueID = "$randomNumber"
 
                     val formBody = FormBody.Builder()
                         .add("id",uniqueID)
@@ -302,9 +365,6 @@ class TasksFragment : Fragment() {
 
 
         })
-
-
-
 
     }
 }
