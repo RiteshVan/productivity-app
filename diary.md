@@ -85,4 +85,5 @@ Added functionaity to store completed tasks in separate table.
 Added backend functionality to store images next need to integrate with application.
 
 26/2/25:
-Can now upload images from app to backend
+Can now upload images from app to backend, created html website temporarily to show if images were uploaded to backend correctly (they were).
+Now need to make thes images show in app, caption functionality not working yet need to update or allow user to type custom caption.
