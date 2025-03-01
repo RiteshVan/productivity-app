@@ -57,9 +57,15 @@ class TasksFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+                    val taskTitle = result.data?.getStringExtra("Title")
+                    Log.d("TasksFragment", "$taskTitle")
 
                     imageBitmap?.let {
-                        uploadImage(it,capturedTaskTitle)
+                        if (taskTitle != null) {
+                            uploadImage(it, taskTitle)
+                        } else {
+                            Toast.makeText(requireContext(), "Task title  empty", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                 }
@@ -67,7 +73,7 @@ class TasksFragment : Fragment() {
             }
     }
 
-    private fun uploadImage(bitmap: Bitmap,caption:String){
+    private fun uploadImage(bitmap: Bitmap,taskTitle: String){
 
         val randomNumber = Random.nextLong(10000) //Selects random number up to 99
 
@@ -80,7 +86,7 @@ class TasksFragment : Fragment() {
         val multipartBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("image","task-image$randomNumber.jpeg", requestBody)
-            .addFormDataPart("caption",caption)
+            .addFormDataPart("caption",taskTitle)
             .build()
 
         val request = Request.Builder().url("http://192.168.1.112:4997/upload").post(multipartBody).build()

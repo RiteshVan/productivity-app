@@ -41,6 +41,9 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.mockito.core)
+
+    implementation(libs.glide)
     implementation(libs.squareup.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
