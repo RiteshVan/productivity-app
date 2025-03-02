@@ -23,7 +23,6 @@ class CompletedTask(db.Model):
     username = db.Column(db.String(25), nullable=False)
 
 
-
 #Test connection
 @tasks_backend.route("/test") 
 def test(): 
@@ -49,7 +48,8 @@ def add_task():
 
 @tasks_backend.route("/delete_task/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
-    task = Task.query.get(task_id)
+    task = db.session.get(Task, task_id)
+
 
     if task:
 
@@ -105,6 +105,23 @@ def get_completed_tasks():
     ]
 
     return {"completed_tasks":completed_task_list}
+
+
+@tasks_backend.route("/get_hours_per_tag")
+def get_hours_per_tag():
+    tasks = CompletedTask.query.all()
+    
+    hours_per_tag = {}
+
+    for task in tasks:
+        if task.tag in hours_per_tag:
+            hours_per_tag[task.tag] += task.hours
+        else:
+            hours_per_tag[task.tag] = task.hours
+
+
+    return {"hours_per_tag":hours_per_tag}
+
 
 if __name__ == '__main__':
     with tasks_backend.app_context():
