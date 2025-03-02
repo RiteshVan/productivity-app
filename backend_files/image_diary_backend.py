@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template
+from flask import Flask,request,render_template,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -7,7 +7,7 @@ import os
 image_diary_backend = Flask(__name__)
 image_diary_backend.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 image_diary_backend.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-image_diary_backend.config['UPLOAD_FOLDER'] = 'uploads'
+image_diary_backend.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 db =  SQLAlchemy(image_diary_backend)
 
@@ -39,6 +39,18 @@ def upload():
         db.session.commit()
 
     return "added image"
+
+@image_diary_backend.route('/get_images', methods=['GET'])
+def get_images():
+
+    images = Image.query.all()
+    images_list = [{
+
+        'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
+        'caption':image.caption
+    } for image in images]
+        
+    return {"images":images_list}
 
 
 if __name__ == '__main__':
