@@ -57,15 +57,12 @@ class TasksFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                    val taskTitle = result.data?.getStringExtra("Title")
-                    Log.d("TasksFragment", "$taskTitle")
+                    val taskTitle = result.data?.extras?.get("Title") as? String
+
+                    Log.d("tasktest","$taskTitle")
 
                     imageBitmap?.let {
-                        if (taskTitle != null) {
-                            uploadImage(it, taskTitle)
-                        } else {
-                            Toast.makeText(requireContext(), "Task title  empty", Toast.LENGTH_SHORT).show()
-                        }
+                        uploadImage(it, taskTitle.toString())
                     }
 
                 }
@@ -252,7 +249,13 @@ class TasksFragment : Fragment() {
                             try {
                                 if (response.isSuccessful) {
                                     requireActivity().runOnUiThread {
-                                        val responseBody = response.body?.string()
+                                        requireActivity().runOnUiThread {
+                                            Toast.makeText(
+                                                requireContext(),"added",Toast.LENGTH_SHORT)
+                                                .show()
+
+                                            tasksAdapter.refreshTasks()
+                                        }
 
                                         Toast.makeText(
                                             requireContext(),"added",Toast.LENGTH_SHORT)
@@ -303,8 +306,7 @@ class TasksFragment : Fragment() {
             override fun onResponse(call: Call, response: Response) {
                 try {
                     if (response.isSuccessful) {
-                        val responseBody = response.body?.string()
-                        val tasks = getTasks(responseBody)
+
 
                         requireActivity().runOnUiThread{
                             tasksAdapter.refreshTasks()

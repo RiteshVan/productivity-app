@@ -72,20 +72,18 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
         AlertDialog.Builder(context)
             .setTitle("Task picture?")
             .setPositiveButton("Yes"){_,_->
-                openCamera(task.title)
+                openCamera(task)
             }.setNegativeButton("No"){_,_->
                 deleteTask(task.id)
             }.show()
     }
 
-    private fun openCamera(taskTitle: String){
+    private fun openCamera(task: Task){
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.putExtra("Title",taskTitle)
-            Log.d("Tasksadapter", taskTitle)
+            intent.putExtra("Title",task.title)
             cameraLauncher.launch(intent)
-
         } else{
             ActivityCompat.requestPermissions(
                 context as Activity,
@@ -93,6 +91,8 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
                 100
             )
         }
+
+        deleteTask(task.id)
 
     }
 
