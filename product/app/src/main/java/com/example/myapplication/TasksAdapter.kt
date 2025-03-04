@@ -82,7 +82,7 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.putExtra("Title",task.title)
+            intent.putExtra("Title","caption")
             cameraLauncher.launch(intent)
         } else{
             ActivityCompat.requestPermissions(
