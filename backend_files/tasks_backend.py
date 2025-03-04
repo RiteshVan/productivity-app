@@ -123,6 +123,22 @@ def get_hours_per_tag():
     return {"hours_per_tag":hours_per_tag}
 
 
+@tasks_backend.route("/get_hours_per_user")
+def get_hours_per_user():
+    tasks = CompletedTask.query.all()
+
+    hours_per_user = {}
+
+    for task in tasks:
+        if task.username in hours_per_user:
+            hours_per_user[task.username] += task.hours
+        else:
+            hours_per_user[task.username] = task.hours
+
+    return {"hours_per_user":hours_per_user}
+
+
+
 if __name__ == '__main__':
     with tasks_backend.app_context():
         db.create_all()
