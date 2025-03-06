@@ -2,6 +2,8 @@ package com.example.myapplication
 
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -136,16 +138,26 @@ class TasksFragment : Fragment() {
                 }
             }
 
+            var typingRun:Runnable? = null
+            val handler = Handler(Looper.getMainLooper())
+
+
             editText.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     //Not needed fot this implementation
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    //Not needed fot this implementation
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
-                    classifyTask(editText.text.toString())
+                    typingRun?.let { handler.removeCallbacksAndMessages(it) }
+                    typingRun = kotlinx.coroutines.Runnable {
+                        classifyTask(editText.text.toString(),tag)
+                    }
+                    handler.postDelayed(typingRun!!,3000)
+
                 }
 
             })
@@ -281,7 +293,7 @@ class TasksFragment : Fragment() {
 
     }
 
-    private fun classifyTask(taskTitle: String) {
+    private fun classifyTask(taskTitle: String,tagsSpinner: Spinner) {
         val formBody = FormBody.Builder().add("value",taskTitle).build()
 
         val request = Request.Builder().url("http://192.168.1.112:4999/classify").post(formBody).build()
@@ -293,7 +305,12 @@ class TasksFragment : Fragment() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful){
-                    Toast.makeText(requireContext(),"response.body?.toString()",Toast.LENGTH_LONG).show()
+                    val result = response.body?.string()
+                    val listTags = listOf("Work","Exercise","Personal","Shopping","Uni  Work","Gardening")
+                    val index = listTags.indexOf(result)
+
+                    tagsSpinner.setSelection(index)
+
                 }
                  else {
                 Toast.makeText(requireContext(),"not working",Toast.LENGTH_LONG).show()
