@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.example.myapplication.databinding.FragmentHomeBinding
-import com.example.myapplication.databinding.FragmentTasksBinding
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient

@@ -1,15 +1,12 @@
 package com.example.myapplication
 
 
-import kotlin.random.Random
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,24 +16,16 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
@@ -79,10 +68,12 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
     }
 
     private fun openCamera(task: Task){
+        (context as? TasksFragment)?.tempCaption = task.title
+        Log.d("tasktest","${task.title}")
+
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.putExtra("Title",task.title)
             cameraLauncher.launch(intent)
         } else{
             ActivityCompat.requestPermissions(

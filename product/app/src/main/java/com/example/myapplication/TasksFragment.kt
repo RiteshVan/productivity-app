@@ -5,36 +5,28 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentTasksBinding
-import com.google.android.material.color.utilities.ToneDeltaPair
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.Date
 import kotlin.random.Random
-
 
 class TasksFragment : Fragment() {
 
@@ -47,22 +39,22 @@ class TasksFragment : Fragment() {
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
 
+    var tempCaption: String? = null
+
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                    val taskTitle = result.data?.extras?.get("Title") as? String
+                    val taskTitle = tempCaption ?:"No caption"
 
                     Log.d("tasktest","$taskTitle")
 
                     imageBitmap?.let {
-                        uploadImage(it, taskTitle.toString())
+                        uploadImage(it, taskTitle)
                     }
 
                 }
