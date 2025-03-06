@@ -87,3 +87,8 @@ Added backend functionality to store images next need to integrate with applicat
 26/2/25:
 Can now upload images from app to backend, created html website temporarily to show if images were uploaded to backend correctly (they were).
 Now need to make thes images show in app, caption functionality not working yet need to update or allow user to type custom caption.
+
+3/3/25-6/3/25:
+App now loads images from backend with captions. Captions now work correctly. Tags feature now implemented to alert dialog with prior errors fixed. 
+Some timer feature issues fixed still not quite usable yet.
+Now focus on standout AI powered feature.
