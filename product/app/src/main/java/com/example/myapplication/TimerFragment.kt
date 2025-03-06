@@ -31,17 +31,11 @@ class TimerFragment : Fragment(),View.OnClickListener {
 
 
     private var timeSelected:Long = 6000
-    private var timeToGo:Long =timeSelected
+    private var timeToGo:Long =0
 
     private enum class TimerStatus{
         STOPPED,STARTED
     }
-
-
-
-    private lateinit var view: View
-
-    private var timerStatus:TimerStatus = TimerStatus.STOPPED
 
     private lateinit var progressBar:ProgressBar
     private lateinit var editTime: EditText
@@ -49,16 +43,17 @@ class TimerFragment : Fragment(),View.OnClickListener {
     private lateinit var buttonReset:ImageView
     private lateinit var buttonStartStop:ImageView
 
-    private lateinit var countDownTimer:CountDownTimer
+
+    private var timerStatus:TimerStatus = TimerStatus.STOPPED
+    private var countDownTimer:CountDownTimer?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)!!
-        if (proximitySensor==null){
+        if (proximitySensor == null){
             Toast.makeText(requireContext(),"Sensor unavailable",Toast.LENGTH_SHORT).show()
         }
-
         else{
             sensorManager.registerListener(proximityListener,proximitySensor,SensorManager.SENSOR_DELAY_NORMAL)
         }
@@ -69,18 +64,13 @@ class TimerFragment : Fragment(),View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        view = inflater.inflate(R.layout.fragment_timer, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_timer, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initViews()
-
+        initViews(view)
         initListeners()
-
     }
 
 
@@ -90,7 +80,7 @@ class TimerFragment : Fragment(),View.OnClickListener {
 
     }
 
-    private fun initViews(){
+    private fun initViews(view: View){
         progressBar = view.findViewById(R.id.progress_bar)
         editTime = view.findViewById(R.id.edit_text_time)
         viewTime = view.findViewById(R.id.text_view_time)
@@ -104,21 +94,28 @@ class TimerFragment : Fragment(),View.OnClickListener {
         when (view.id){
             R.id.reset_button-> reset()
             R.id.start_stop_button-> startStop()
-
         }
     }
 
 
     private fun reset(){
         stopTimer()
-        startTimer()
+        timeToGo=timeSelected
+        viewTime.text = timeFormat(timeToGo)
+        setProgress()
+        timerStatus=TimerStatus.STOPPED
+        buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
+        buttonReset.visibility = View.GONE
+        editTime.isEnabled = true
+
     }
 
 
     private fun startStop() {
         if (timerStatus == TimerStatus.STOPPED){
-            setTimer()
-
+            if (timeToGo == 0L) {
+                setTimer()
+            }
             setProgress()
 
             buttonReset.visibility = View.VISIBLE
@@ -132,15 +129,10 @@ class TimerFragment : Fragment(),View.OnClickListener {
             startTimer()
         }
         else{
-            buttonReset.visibility = View.GONE
-
+            stopTimer()
             buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
 
-            editTime.isEnabled = true
-
             timerStatus =TimerStatus.STOPPED
-
-            stopTimer()
 
         }
     }
@@ -148,50 +140,54 @@ class TimerFragment : Fragment(),View.OnClickListener {
 
 
     private fun setTimer() {
-        var time = 0
+        var time = editTime.text.toString().toIntOrNull() ?: 1
 
-        if (editTime.text.toString().isNotEmpty()){
-
-            time = editTime.text.toString().toInt()
-        } else {
-            Toast.makeText(requireContext(), "Add no. minutes",Toast.LENGTH_SHORT).show()
-        }
         timeSelected = time.toLong() * 60 * 1000
 
+        timeToGo = timeSelected
+        setProgress()
     }
 
 
 
     private fun startTimer(){
-        countDownTimer = object :CountDownTimer(timeSelected,1000) {
+        countDownTimer = object :CountDownTimer(timeToGo,1000) {
             override fun onTick(timeLeft: Long) {
-                viewTime.text = timeFormat(timeLeft)
-                progressBar.progress = ((timeSelected - timeLeft)/1000).toInt()
+                timeToGo = timeLeft
+                viewTime.text = timeFormat(timeToGo)
+                updateProgressBar(timeLeft)
             }
 
             override fun onFinish() {
-                viewTime.text = timeFormat(timeSelected)
-                setProgress()
+                viewTime.text = timeFormat(0)
+                updateProgressBar(0)
                 buttonReset.visibility= View.GONE
+
                 buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
                 editTime.isEnabled=true
                 timerStatus= TimerStatus.STOPPED
 
+                timeToGo=0
             }
 
         }.start()
-        countDownTimer.start()
+
 
     }
 
+    private fun updateProgressBar(timeLeft:Long){
+        val progress = ((timeSelected-timeLeft)/1000).toInt()
+        progressBar.progress = progress
+    }
+
     private fun stopTimer(){
-        countDownTimer.cancel()
+        countDownTimer?.cancel()
     }
 
 
     private fun setProgress(){
-        progressBar.max = (timeSelected/1000).toInt()
-        progressBar.progress = (timeSelected/1000).toInt()
+        progressBar.max = 100
+        progressBar.progress = 0
 
     }
 
@@ -201,9 +197,7 @@ class TimerFragment : Fragment(),View.OnClickListener {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds) - TimeUnit.HOURS.toMinutes(hours)
         val seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(minutes)
 
-        val format = String.format("%02d:%02d:%02d",hours,minutes,seconds)
-
-        return format
+        return String.format("%02d:%02d:%02d",hours,minutes,seconds)
 
     }
 
@@ -215,7 +209,6 @@ class TimerFragment : Fragment(),View.OnClickListener {
                     showPauseDialog()
                 }
                 else{
-
                     Log.d("Sensor value","Far away")
                 }
 
@@ -235,12 +228,17 @@ class TimerFragment : Fragment(),View.OnClickListener {
             timerStatus=TimerStatus.STOPPED
             val builder = AlertDialog.Builder(requireContext())
             builder.setMessage("Timer paused as phone was moved. Resume?")
-                .setPositiveButton("Resume"){dialog,id -> startTimer()}
-                .setNegativeButton("Cancel"){dialog,id -> //Remains paused
-                }
+                .setPositiveButton("Resume"){_,_ -> startTimer()}
+                .setNegativeButton("Cancel"){dialog,_ -> dialog.dismiss() }
 
             val alert = builder.create()
             alert.show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopTimer()
+        sensorManager.unregisterListener(proximityListener)
     }
 }
