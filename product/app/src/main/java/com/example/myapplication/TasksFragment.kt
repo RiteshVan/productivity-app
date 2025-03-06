@@ -47,7 +47,10 @@ class TasksFragment : Fragment() {
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
 
-    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
+    var caption :String? = null
+
+    lateinit var cameraLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +60,13 @@ class TasksFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                    val taskTitle = result.data?.extras?.get("Title") as? String
+
+                    val taskTitle = caption ?: "No caption"
 
                     Log.d("tasktest","$taskTitle")
 
                     imageBitmap?.let {
-                        uploadImage(it, taskTitle.toString())
+                        uploadImage(it, taskTitle)
                     }
 
                 }
@@ -119,7 +123,7 @@ class TasksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser",cameraLauncher)
+        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser")
 
         val tasksView = binding.tasksView
 

@@ -41,7 +41,7 @@ import java.io.IOException
 
 
 
-class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String,private val cameraLauncher: ActivityResultLauncher<Intent>,private var capturedTaskTitle:String? =null) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val titleTextView: TextView = itemView.findViewById(R.id.task_title)
         val checkBox:CheckBox = itemView.findViewById(R.id.task_check)
@@ -79,11 +79,18 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
     }
 
     private fun openCamera(task: Task){
+
+        val tasksFragment = (context as? FragmentActivity)?.supportFragmentManager?.fragments?.find {
+            it is TasksFragment
+        } as? TasksFragment
+
+        tasksFragment?.caption = task.title
+
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra("Title",task.title)
-            cameraLauncher.launch(intent)
+            tasksFragment?.cameraLauncher?.launch(intent)
         } else{
             ActivityCompat.requestPermissions(
                 context as Activity,
