@@ -195,4 +195,12 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
         }
         return tasks
     }
+
+
+    fun updateTasks(newTasks :List<Task>){
+        tasks=newTasks
+        notifyDataSetChanged()
+    }
+
+
 }

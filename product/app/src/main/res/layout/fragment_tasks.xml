@@ -8,6 +8,13 @@
 
 
     <!--View to hold task items-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="11dp"
+        android:id="@+id/select_tag_selection"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasksView"
         android:layout_width="match_parent"
