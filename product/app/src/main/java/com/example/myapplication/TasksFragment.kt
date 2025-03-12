@@ -2,6 +2,7 @@ package com.example.myapplication
 
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
@@ -26,6 +28,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import kotlin.random.Random
 
 class TasksFragment : Fragment() {
@@ -38,6 +43,7 @@ class TasksFragment : Fragment() {
     private lateinit var tasksAdapter:TasksAdapter
     private lateinit var selectedTag:String
     private lateinit var selectedTime:String
+    private lateinit var selectedDueDate:String
 
     var tempCaption: String? = null
 
@@ -138,6 +144,7 @@ class TasksFragment : Fragment() {
             val inflater = layoutInflater
             val dialogLayout =inflater.inflate(R.layout.new_task_add_dialog,null)
             val editText = dialogLayout.findViewById<EditText>(R.id.task_add_text)
+            val dueDateButton = dialogLayout.findViewById<Button>(R.id.select_due_date_button)
 
             //Choose tag from spinner
             val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
@@ -208,13 +215,22 @@ class TasksFragment : Fragment() {
 //
 //            })
 
+
+
+            dueDateButton.setOnClickListener {
+                showDataPickerDialog {date ->
+                    selectedDueDate=date
+                }
+            }
+
+
             with(builder){
                 setTitle("Add Task")
                 setPositiveButton("OK"){dialog ,which->
                     val title = editText.text.toString()
 
 
-                    val randomNumber = Random.nextLong(10000) //Selects random number up to 99
+                    val randomNumber = Random.nextLong(10000) //Picks random number up to 9999
                     val uniqueID = "$randomNumber"
 
                     val formBody = FormBody.Builder()
@@ -223,6 +239,7 @@ class TasksFragment : Fragment() {
                         .add("tag",selectedTag)
                         .add("hours",selectedTime)
                         .add("username","testUser")
+                        .add("due_date",selectedDueDate)
                         .build()
 
                     val request = Request.Builder()
@@ -280,6 +297,26 @@ class TasksFragment : Fragment() {
 
         }
 
+    }
+
+    private fun showDataPickerDialog(dateSelected:(String) -> Unit) {
+        val calendar =  Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val dateSelector = DatePickerDialog(requireContext(),
+            { _,year,month,day->
+                val date = Calendar.getInstance().apply {
+                    set(year,month,day)
+                }
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
+                val finalDate = dateFormat.format(date.time)
+                dateSelected(finalDate)
+
+        },year,month,day)
+
+        dateSelector.show()
     }
 
 

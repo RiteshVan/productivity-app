@@ -29,4 +29,13 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
 
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Select Due Date"
+        android:layout_marginTop="15dp"
+        android:id="@+id/select_due_date_button"
+        />
+
 </LinearLayout>
