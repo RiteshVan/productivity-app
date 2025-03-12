@@ -1,5 +1,6 @@
 from flask import Flask,request
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 tasks_backend = Flask(__name__)
 
@@ -14,13 +15,15 @@ class Task(db.Model):
     tag = db.Column(db.String(25), nullable=False)
     hours = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(25), nullable=False)
-
+    due_date = db.Column(db.Date, nullable=True)
+  
 class CompletedTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     tag = db.Column(db.String(25), nullable=False)
     hours = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(25), nullable=False)
+    due_date = db.Column(db.Date, nullable=True)
 
 
 #Test connection
@@ -36,9 +39,16 @@ def add_task():
     tag = request.form["tag"]
     hours = request.form["hours"]
     username = request.form["username"]
+    str_due_date = request.form.get("due_date")
+
+    due_date=None
+    if str_due_date:
+        try:
+            due_date=datetime.strptime(str_due_date,'%Y-%m-%d')
+        except ValueError:
+            return 'error'
     
-    
-    new_task= Task(id=id,title=title,tag=tag,hours=hours,username=username)
+    new_task= Task(id=id,title=title,tag=tag,hours=hours,username=username,due_date=due_date)
     
     db.session.add(new_task)
     db.session.commit()
@@ -87,6 +97,7 @@ def get_tasks():
     ]
 
     return {"tasks":task_list}
+
 
 @tasks_backend.route("/get_completed_tasks")
 def get_completed_tasks():
