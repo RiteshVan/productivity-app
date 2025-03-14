@@ -96,3 +96,7 @@ Now focus on standout AI powered feature.
 8/3/25-13/3/25:
 Added functionality to get tasks by order of diffuculty and fixed various errors thorughout application. 
 Added funcitonality to allow users to include due dates when adding tasks.
+
+
+14/3/25:
+Added functionality to score tasks based on difficulty (still being tested).
