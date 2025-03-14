@@ -1,6 +1,7 @@
 from flask import Flask,request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from transformers import pipeline
 
 tasks_backend = Flask(__name__)
 
@@ -167,14 +168,30 @@ def get_hours_per_user():
     return {"hours_per_user":hours_per_user}
 
 
-def get_task_difficulty_score(task_title):
-    return 0
+classifier = pipeline("zero-shot-classification",model="facebook/bart-large-mnli")
 
+
+
+def get_task_difficulty_score(task_title):
+    difficulty_labels = ["easy","medium" ,"hard"]
+    
+
+    result = classifier(task_title,difficulty_labels)
+
+    easy_score = result["scores"][result["labels"].index("easy")] 
+    medium_score = result["scores"][result["labels"].index("medium")] * 3
+    hard_score = result["scores"][result["labels"].index("hard")] *10
+
+    return (easy_score + hard_score + medium_score)/14
+
+
+print(get_task_difficulty_score("write a four hundred page novel"))
 
 @tasks_backend.route("/get_tasks_by_priority_score")
 def get_tasks_by_priority_score():
     tasks = Task.query.all()
 
+    
 
     task_list = [{ 
 
@@ -183,7 +200,7 @@ def get_tasks_by_priority_score():
         'tag':task.tag,
         'hours':task.hours, 
         'username':task.username ,
-        'difficulty_score': get_task_difficulty_score(task.title)
+        'difficulty_score': get_task_difficulty_score(task.title) * task.hours
 
         } 
         for task in tasks 
