@@ -98,6 +98,24 @@ def get_tasks():
 
     return {"tasks":task_list}
 
+@tasks_backend.route("/get_tasks_by_tag/<string:tag>") 
+def get_tasks_by_tag(tag): 
+    tasks = Task.query.filter_by(tag=tag).all()
+
+    task_list = [{ 
+
+        'id':task.id, 
+        'title':task.title, 
+        'tag':task.tag,
+        'hours':task.hours, 
+        'username':task.username 
+
+        } 
+        for task in tasks 
+        ]
+    
+    return {"tasks":task_list}
+
 
 @tasks_backend.route("/get_completed_tasks")
 def get_completed_tasks():
@@ -148,6 +166,32 @@ def get_hours_per_user():
 
     return {"hours_per_user":hours_per_user}
 
+
+def get_task_difficulty_score(task_title):
+    return 0
+
+
+@tasks_backend.route("/get_tasks_by_priority_score")
+def get_tasks_by_priority_score():
+    tasks = Task.query.all()
+
+
+    task_list = [{ 
+
+        'id':task.id, 
+        'title':task.title, 
+        'tag':task.tag,
+        'hours':task.hours, 
+        'username':task.username ,
+        'difficulty_score': get_task_difficulty_score(task.title)
+
+        } 
+        for task in tasks 
+        ]
+    
+    sorted_list = sorted(task_list , key=lambda item:item['difficulty_score'])
+
+    return {"sorted_tasks":sorted_list}
 
 
 if __name__ == '__main__':
