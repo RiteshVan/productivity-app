@@ -42,6 +42,13 @@ android {
 
 dependencies {
     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.android)
+    testImplementation (libs.mockito.junit.jupiter)
+    androidTestImplementation(libs.mockito.android)
+
+
 
     implementation(libs.glide)
     implementation(libs.squareup.okhttp)

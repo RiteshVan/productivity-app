@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setChart(){
+     fun setChart(){
 
         pieChart.animate()
 
@@ -79,8 +79,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun setGreeting():String{
-        val calendar = Calendar.getInstance()
+    fun setGreeting(calendar: Calendar = Calendar.getInstance()):String{
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
 
         return when (hourOfDay) {
@@ -127,7 +126,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun updatePieChart(workHours: Float,personalHours: Float,exerciseHours: Float,shoppingHours: Float,uniWorkHours: Float,gardeningHours:Float){
+     fun updatePieChart(workHours: Float,personalHours: Float,exerciseHours: Float,shoppingHours: Float,uniWorkHours: Float,gardeningHours:Float){
         pieChart.clearChart()
 
         pieChart.addPieSlice(

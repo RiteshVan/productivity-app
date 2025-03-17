@@ -30,7 +30,7 @@ import java.io.IOException
 
 
 
-class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String,private val cameraLauncher: ActivityResultLauncher<Intent>,private var capturedTaskTitle:String? =null) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+open class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String,private val cameraLauncher: ActivityResultLauncher<Intent>,private var capturedTaskTitle:String? =null) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val titleTextView: TextView = itemView.findViewById(R.id.task_title)
         val checkBox:CheckBox = itemView.findViewById(R.id.task_check)
