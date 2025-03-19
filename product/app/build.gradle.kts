@@ -41,6 +41,10 @@ android {
 }
 
 dependencies {
+    implementation (libs.androidx.rules)
+    androidTestImplementation (libs.androidx.fragment.testing)
+
+    testImplementation (libs.mockwebserver)
     implementation(libs.squareup.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
