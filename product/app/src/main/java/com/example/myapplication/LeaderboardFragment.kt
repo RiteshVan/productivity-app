@@ -23,7 +23,7 @@ class LeaderboardFragment : Fragment() {
     private  var _binding: FragmentLeaderboardBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var leaderboardAdapter: LeaderboardAdapter
+    lateinit var leaderboardAdapter: LeaderboardAdapter
     private val client = OkHttpClient()
 
     override fun onCreateView(
@@ -48,7 +48,7 @@ class LeaderboardFragment : Fragment() {
     }
 
 
-    private fun getLeaderboard () {
+    fun getLeaderboard () {
         val request = Request.Builder().url("http://192.168.1.112:4998/get_hours_per_user").build()
 
         client.newCall(request).enqueue(object : Callback{

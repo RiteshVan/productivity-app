@@ -42,7 +42,16 @@ android {
 
 dependencies {
     testImplementation(libs.mockito.core)
+    androidTestImplementation (libs.mockito.kotlin)
+    androidTestImplementation (libs.mockito.android)
+    androidTestImplementation (libs.mockwebserver)
+    androidTestImplementation (libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.espresso.contrib)
+    androidTestImplementation (libs.androidx.rules)
+    testImplementation (libs.mockwebserver)
 
+    androidTestImplementation(libs.androidx.fragment.testing)
+    debugImplementation (libs.androidx.fragment.testing.manifest)
     implementation(libs.glide)
     implementation(libs.squareup.okhttp)
     implementation(libs.retrofit)
