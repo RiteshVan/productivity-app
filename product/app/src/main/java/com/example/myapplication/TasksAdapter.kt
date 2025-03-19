@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
@@ -14,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -28,152 +27,169 @@ import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 
-
-
-open class TasksAdapter(private var tasks: List<Task>,private val context: Context,private val usernameText: String,private val cameraLauncher: ActivityResultLauncher<Intent>,private var capturedTaskTitle:String? =null) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+open class TasksAdapter(
+    private var tasks: List<Task>,
+    private val context: Context,
+    private val usernameText: String,
+    private val cameraLauncher: ActivityResultLauncher<Intent>,
+    private var capturedTaskTitle: String? = null,
+) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+    class TaskViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.task_title)
-        val checkBox:CheckBox = itemView.findViewById(R.id.task_check)
-
+        val checkBox: CheckBox = itemView.findViewById(R.id.task_check)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_view,parent,false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): TaskViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_view, parent, false)
         return TaskViewHolder(view)
     }
 
-    override fun getItemCount(): Int =tasks.size
+    override fun getItemCount(): Int = tasks.size
 
-
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: TaskViewHolder,
+        position: Int,
+    ) {
         val task = tasks[position]
         holder.titleTextView.text = task.title
 
-
-        holder.checkBox.setOnClickListener{
-            Log.d("test","clicked")
+        holder.checkBox.setOnClickListener {
+            Log.d("test", "clicked")
             taskCompletedDialog(task)
         }
     }
 
-
     private fun taskCompletedDialog(task: Task) {
-        AlertDialog.Builder(context)
+        AlertDialog
+            .Builder(context)
             .setTitle("Task picture?")
-            .setPositiveButton("Yes"){_,_->
+            .setPositiveButton("Yes") { _, _ ->
                 openCamera(task)
-            }.setNegativeButton("No"){_,_->
+            }.setNegativeButton("No") { _, _ ->
                 deleteTask(task.id)
             }.show()
     }
 
-    private fun openCamera(task: Task){
+    private fun openCamera(task: Task) {
         (context as? TasksFragment)?.tempCaption = task.title
-        Log.d("tasktest","${task.title}")
+        Log.d("tasktest", "${task.title}")
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraLauncher.launch(intent)
-        } else{
+        } else {
             ActivityCompat.requestPermissions(
                 context as Activity,
                 arrayOf(Manifest.permission.CAMERA),
-                100
+                100,
             )
         }
 
         deleteTask(task.id)
-
     }
 
-
-
-    private fun deleteTask(taskId : Int) {
+    private fun deleteTask(taskId: Int) {
         val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("http://192.168.1.112:4998/delete_task/$taskId")
-            .delete()
-            .build()
+        val request =
+            Request
+                .Builder()
+                .url("http://192.168.1.112:4998/delete_task/$taskId")
+                .delete()
+                .build()
 
-        client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                (context as? FragmentActivity)?.runOnUiThread {
-                    Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (response.isSuccessful) {
-                        (context as? FragmentActivity)?.runOnUiThread {
-                            Toast.makeText(context,"Task deleted",Toast.LENGTH_SHORT).show()
-                            refreshTasks()
-                        }
-                    } else {
-                        (context as? FragmentActivity)?.runOnUiThread {
-                            Toast.makeText(context,"Task not deleted",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } catch (e:Exception) {
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
                     (context as? FragmentActivity)?.runOnUiThread {
-                        Toast.makeText(context, "Response error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                     }
-                } finally {
-                    response.close()
                 }
 
-            }
-        })
-
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    try {
+                        if (response.isSuccessful) {
+                            (context as? FragmentActivity)?.runOnUiThread {
+                                Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show()
+                                refreshTasks()
+                            }
+                        } else {
+                            (context as? FragmentActivity)?.runOnUiThread {
+                                Toast.makeText(context, "Task not deleted", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        (context as? FragmentActivity)?.runOnUiThread {
+                            Toast.makeText(context, "Response error", Toast.LENGTH_SHORT).show()
+                        }
+                    } finally {
+                        response.close()
+                    }
+                }
+            },
+        )
     }
-
-
-
 
     fun refreshTasks() {
         val client = OkHttpClient()
 
         val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks").build()
 
-        client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                (context as? FragmentActivity)?.runOnUiThread {
-                    Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body?.string()
-
-                        val newTasks = getTasks(responseBody)
-
-                        (context as? FragmentActivity)?.runOnUiThread{
-                            tasks =newTasks
-                            notifyDataSetChanged()
-                        }
-                    } else {
-                        (context as? FragmentActivity)?.runOnUiThread {
-                            Toast.makeText(context,"Failed to get tasks",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } catch (e: Exception) {
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
                     (context as? FragmentActivity)?.runOnUiThread {
-                        Toast.makeText(context,"Response error",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                     }
-                } finally {
-                    response.close()
                 }
-            }
 
-        })
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    try {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body?.string()
 
+                            val newTasks = getTasks(responseBody)
+
+                            (context as? FragmentActivity)?.runOnUiThread {
+                                tasks = newTasks
+                                notifyDataSetChanged()
+                            }
+                        } else {
+                            (context as? FragmentActivity)?.runOnUiThread {
+                                Toast.makeText(context, "Failed to get tasks", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        (context as? FragmentActivity)?.runOnUiThread {
+                            Toast.makeText(context, "Response error", Toast.LENGTH_SHORT).show()
+                        }
+                    } finally {
+                        response.close()
+                    }
+                }
+            },
+        )
     }
 
-
-    private fun getTasks(responseBody: String?) : List<Task> {
+    private fun getTasks(responseBody: String?): List<Task> {
         val tasks = mutableListOf<Task>()
 
         if (responseBody != null) {
@@ -182,13 +198,14 @@ open class TasksAdapter(private var tasks: List<Task>,private val context: Conte
 
             for (i in 0 until tasksArray.length()) {
                 val taskObject = tasksArray.getJSONObject(i)
-                val task = Task(
-                    taskObject.getInt("id"),
-                    taskObject.getString("title"),
-                    taskObject.getString("tag"),
-                    taskObject.getInt("hours"),
-                    taskObject.getString("username")
-                )
+                val task =
+                    Task(
+                        taskObject.getInt("id"),
+                        taskObject.getString("title"),
+                        taskObject.getString("tag"),
+                        taskObject.getInt("hours"),
+                        taskObject.getString("username"),
+                    )
 
                 tasks.add(task)
             }

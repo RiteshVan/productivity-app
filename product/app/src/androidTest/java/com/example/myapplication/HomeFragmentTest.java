@@ -4,9 +4,13 @@ package com.example.myapplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.eazegraph.lib.charts.PieChart;
@@ -14,13 +18,22 @@ import org.eazegraph.lib.models.PieModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
+
 import org.mockito.MockitoAnnotations;
+
 
 
 import android.icu.util.Calendar;
 
+
 import java.lang.reflect.Field;
+
+
+import okhttp3.OkHttpClient;
+
+
 
 @RunWith(AndroidJUnit4.class)
 public class HomeFragmentTest {
@@ -28,12 +41,18 @@ public class HomeFragmentTest {
     private TasksAdapter tasksAdapter;
 
     private Calendar calendar;
-    private PieChart mockPieChart;
-
-
 
 
     private HomeFragment homeFragment;
+
+
+    @Mock
+    private OkHttpClient mockClient;
+
+    @Mock
+    private PieChart mockPieChart;
+
+
 
     @Before
     public void setup() {
@@ -89,7 +108,7 @@ public class HomeFragmentTest {
         float uniWorkHours = 8.0f;
         float gardeningHours= 14.0f;
 
-        mockPieChart = mock(PieChart.class);
+        PieChart mockPieChart = mock(PieChart.class);
 
         try{
             Field fieldChart = HomeFragment.class.getDeclaredField("pieChart");
@@ -107,11 +126,12 @@ public class HomeFragmentTest {
         verify(mockPieChart,times(6)).addPieSlice(any(PieModel.class));
 
         verify(mockPieChart).animate();
-
-
-
-
     }
+
+
+
+
+
 
 
 }
