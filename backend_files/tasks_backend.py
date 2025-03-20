@@ -10,12 +10,14 @@ tasks_backend.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(tasks_backend)
 
+classifier = pipeline("zero-shot-classification" , model = "facebook/bart-large-mnli")
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     tag = db.Column(db.String(25), nullable=False)
     hours = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(25), nullable=False)
+    username = db.Column(db.String(25), nullable=False) 
     due_date = db.Column(db.Date, nullable=True)
   
 class CompletedTask(db.Model):
@@ -150,6 +152,9 @@ def get_hours_per_tag():
             hours_per_tag[task.tag] = task.hours
 
 
+
+    
+    print({"hours_per_tag":hours_per_tag})
     return {"hours_per_tag":hours_per_tag}
 
 
@@ -168,47 +173,45 @@ def get_hours_per_user():
     return {"hours_per_user":hours_per_user}
 
 
-classifier = pipeline("zero-shot-classification",model="facebook/bart-large-mnli")
+def prioritise_task(title):
+
+    labels = ["low priority","medium priority","high priority"]
+    result=classifier(title,labels)
+
+    print(result)
+
+    weights =[100,10,1]
+
+    priority_score=0
+    for i, label in enumerate(result['labels']):
+        priority_score += result['scores'][i] * weights[i]
+        print(priority_score)
+
+    return priority_score/sum(weights)
 
 
 
-def get_task_difficulty_score(task_title):
-    difficulty_labels = ["easy","medium" ,"hard"]
-    
 
-    result = classifier(task_title,difficulty_labels)
-
-    easy_score = result["scores"][result["labels"].index("easy")] 
-    medium_score = result["scores"][result["labels"].index("medium")] * 3
-    hard_score = result["scores"][result["labels"].index("hard")] *10
-
-    return (easy_score + hard_score + medium_score)/14
-
-
-print(get_task_difficulty_score("write a four hundred page novel"))
-
-@tasks_backend.route("/get_tasks_by_priority_score")
-def get_tasks_by_priority_score():
+@tasks_backend.route("/get_prioritised_tasks")
+def get_prioritised_tasks():
     tasks = Task.query.all()
 
-    
+    prioritised_task_list = [{
 
-    task_list = [{ 
-
-        'id':task.id, 
-        'title':task.title, 
+        'id':task.id,
+        'title':task.title,
         'tag':task.tag,
-        'hours':task.hours, 
-        'username':task.username ,
-        'difficulty_score': get_task_difficulty_score(task.title) * task.hours
+        'hours':task.hours,
+        'username':task.username,
+        'priority':prioritise_task(task.title)
 
-        } 
-        for task in tasks 
-        ]
-    
-    sorted_list = sorted(task_list , key=lambda item:item['difficulty_score'])
+    }
+    for task in tasks
+    ]
 
-    return {"sorted_tasks":sorted_list}
+    return {"tasks":prioritised_task_list}
+
+
 
 
 if __name__ == '__main__':
