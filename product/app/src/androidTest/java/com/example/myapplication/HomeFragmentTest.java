@@ -32,8 +32,6 @@ import okhttp3.OkHttpClient;
 
 @RunWith(AndroidJUnit4.class)
 public class HomeFragmentTest {
-    @Mock
-    private TasksAdapter tasksAdapter;
 
     private Calendar calendar;
 
@@ -41,11 +39,7 @@ public class HomeFragmentTest {
     private HomeFragment homeFragment;
 
 
-    @Mock
-    private OkHttpClient mockClient;
 
-    @Mock
-    private PieChart mockPieChart;
 
 
 
