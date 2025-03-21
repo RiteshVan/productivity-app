@@ -78,6 +78,37 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
     }
 
 
+    private fun taskCompletedDialog(task: Task) {
+        AlertDialog.Builder(context)
+            .setTitle("Task picture?")
+            .setPositiveButton("Yes"){_,_->
+                openCamera(task)
+            }.setNegativeButton("No"){_,_->
+                deleteTask(task.id)
+            }.show()
+    }
+
+    private fun openCamera(task: Task){
+        (context as? TasksFragment)?.tempCaption = task.title
+        Log.d("tasktest","${task.title}")
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            cameraLauncher.launch(intent)
+        } else{
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.CAMERA),
+                100
+            )
+        }
+
+        deleteTask(task.id)
+
+    }
+
+
 
 
     private fun taskCompletedDialog(task: Task) {
@@ -242,4 +273,12 @@ class TasksAdapter(private var tasks: List<Task>,private val context: Context,pr
         }
         return tasks
     }
+
+
+    fun updateTasks(newTasks :List<Task>){
+        tasks=newTasks
+        notifyDataSetChanged()
+    }
+
+
 }

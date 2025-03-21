@@ -145,7 +145,100 @@ class TasksFragment : Fragment() {
         refreshTasksList()
 
         editTaskDialog()
+
+        binding.selectTagSelection.setOnClickListener{
+            showTagSelectedDialog()
+        }
     }
+
+    private fun showTagSelectedDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.tag_category_selection_dialog,null)
+        val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
+
+        val listTags = listOf("All","Work","Exercise","Personal","Shopping","Uni  Work","Gardening")
+
+        val arrayAdapter  = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listTags)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+
+        tag.adapter = arrayAdapter
+
+        builder.setView(dialogLayout)
+            .setTitle("Select Tag")
+            .setPositiveButton("OK") {_,_->
+                val selectedTag = tag.selectedItem.toString()
+                filterTasksByTag(selectedTag)
+            }
+                .setNegativeButton("Cancel",null)
+                .show()
+
+        
+    }
+
+
+
+    private fun filterTasksByTag(tag:String) {
+        if (tag == "All"){refreshTasksList()}
+
+        else{
+            val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks_by_tag/$tag").build()
+
+            client.newCall(request).enqueue(object :Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    requireActivity().runOnUiThread{
+                        Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        if (response.isSuccessful){
+                            val responseBody = response.body?.string()
+
+                            if (responseBody != null) {
+                                val tasks = getTasks(responseBody)
+                                requireActivity().runOnUiThread {
+                                    tasksAdapter.updateTasks(tasks)
+                                }
+                            }
+
+                            else{
+                                requireActivity().runOnUiThread{
+                                    Toast.makeText(requireContext(),"Empty task list",Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                        }
+                        else{
+                            requireActivity().runOnUiThread{
+                                Toast.makeText(requireContext(),"Cannot get tasks",Toast.LENGTH_SHORT).show()
+                            }
+
+                        }
+
+
+
+                    }
+                    catch (e:Exception) {
+                        requireActivity().runOnUiThread{
+                            Log.d("check","$e")
+                            Toast.makeText(requireContext(),"Response error: $e",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    finally {
+                        response.close()
+                    }
+
+                }
+            })
+        }
+
+
+    }
+
+
 
     override fun onResume() {
         super.onResume()
@@ -158,6 +251,7 @@ class TasksFragment : Fragment() {
             val inflater = layoutInflater
             val dialogLayout = inflater.inflate(R.layout.new_task_add_dialog, null)
             val editText = dialogLayout.findViewById<EditText>(R.id.task_add_text)
+            val dueDateButton = dialogLayout.findViewById<Button>(R.id.select_due_date_button)
 
             // Choose tag from spinner
             val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)

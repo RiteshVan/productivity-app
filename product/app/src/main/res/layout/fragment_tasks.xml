@@ -8,9 +8,12 @@
 
 
     <!--View to hold task items-->
-
-
-    <!--Button used to add tasks-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="11dp"
+        android:id="@+id/select_tag_selection"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasksView"
@@ -23,6 +26,8 @@
         android:nestedScrollingEnabled="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+
+    <!--Button used to add tasks-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/taskAdd"
         android:layout_width="wrap_content"

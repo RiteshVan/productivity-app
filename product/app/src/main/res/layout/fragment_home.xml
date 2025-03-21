@@ -21,14 +21,14 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/graph_card_view"
-        android:layout_width="364dp"
-        android:layout_height="205dp"
+        android:layout_width="360dp"
+        android:layout_height="235dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="170dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="476dp"
+        android:layout_marginBottom="326dp"
         android:elevation="15dp"
         app:cardCornerRadius="15dp">
 
