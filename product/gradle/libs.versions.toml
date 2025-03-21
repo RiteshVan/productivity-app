@@ -1,6 +1,8 @@
 [versions]
 agp = "8.7.2"
+androidxJunit = "1.1.3"
 cardviewVersion = "1.0.0"
+core = "1.4.0"
 fragmentTesting = "1.4.0"
 githubEazegraph = "1.2.2"
 kotlin = "1.9.24"
@@ -24,10 +26,14 @@ roomKtx = "2.6.1"
 
 [libraries]
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardviewVersion" }
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "fragmentTesting" }
+androidx-junit-v113 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
+androidx-runner = { module = "androidx.test:runner", version.ref = "core" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+espresso-core = { module = "androidx.test.espresso:espresso-core" }
 github-eazegraph = { module = "com.github.blackfizz:eazegraph", version.ref = "githubEazegraph" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
