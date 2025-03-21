@@ -50,6 +50,7 @@ dependencies {
     androidTestImplementation (libs.androidx.rules)
     testImplementation (libs.mockwebserver)
 
+
     androidTestImplementation(libs.androidx.fragment.testing)
     debugImplementation (libs.androidx.fragment.testing.manifest)
     implementation(libs.glide)
