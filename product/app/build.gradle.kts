@@ -41,9 +41,18 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.mockito.core)
+    implementation (libs.androidx.rules)
 
-    implementation(libs.glide)
+    androidTestImplementation (libs.androidx.fragment.testing)
+    androidTestImplementation (libs.mockwebserver)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation (libs.androidx.core)
+    androidTestImplementation (libs.espresso.core)
+    androidTestImplementation (libs.androidx.rules)
+    androidTestImplementation (libs.androidx.runner)
+
+    testImplementation (libs.mockwebserver)
     implementation(libs.squareup.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -58,8 +67,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.material)
 }
