@@ -41,7 +41,7 @@ class TasksFragment : Fragment() {
     private val client = OkHttpClient()
 
     private var _binding: FragmentTasksBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private lateinit var tasksAdapter: TasksAdapter
     private lateinit var selectedTag: String
@@ -149,6 +149,7 @@ class TasksFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        refreshTasksList()
     }
 
     // Dialog popup to add task details
