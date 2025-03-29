@@ -8,6 +8,7 @@ image_diary_backend = Flask(__name__)
 image_diary_backend.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 image_diary_backend.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 image_diary_backend.config['UPLOAD_FOLDER'] = 'static/uploads'
+image_diary_backend.config['UPLOAD_EXTENSIONS'] =[".jpeg"]
 
 db =  SQLAlchemy(image_diary_backend)
 
@@ -16,7 +17,7 @@ os.makedirs(image_diary_backend.config['UPLOAD_FOLDER'], exist_ok=True)
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     caption = db.Column(db.String(150), nullable=False)
-    image = db.Column(db.String(150),nullable=False)
+    image_path = db.Column(db.String(150),nullable=False)
 
 
 @image_diary_backend.route('/test')
@@ -28,13 +29,14 @@ def upload():
     image = request.files['image']
     caption = request.form['caption']
 
+
+
     if image:
-        image_name = secure_filename(image.filename)
-        image_path = os.path.join(image_diary_backend.config['UPLOAD_FOLDER'],image_name)
+        image_path = secure_filename(image.filename)
 
-        image.save(image_path)
+        image.save(os.path.join(image_diary_backend.config['UPLOAD_FOLDER'],image_name))
 
-        new_image = Image(image=image_name,caption=caption)
+        new_image = Image(image_path=image_name,caption=caption)
         db.session.add(new_image)
         db.session.commit()
 
@@ -44,9 +46,10 @@ def upload():
 def get_images():
 
     images = Image.query.all()
+
     images_list = [{
 
-        'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
+        'image':f"http://192.168.1.112:4997/static/uploads/{image.image_path}",
         'caption':image.caption
     } for image in images]
         
