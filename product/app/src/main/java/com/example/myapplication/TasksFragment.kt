@@ -122,6 +122,10 @@ class TasksFragment : Fragment() {
      *
      * Image bitmap converted to bytes so that it can be uploaded and stored in
      * the backend
+     *
+     *
+     * @param bitmap this is the image to be uploaded
+     * @param taskTitle This is the task title which is used as a caption
      */
     private fun uploadImage(
         bitmap: Bitmap,
@@ -239,7 +243,7 @@ class TasksFragment : Fragment() {
 
         editTaskDialog()
 
-        //When button is selected option to choose category is given
+        // When button is selected option to choose category is given
         binding.selectFilter.setOnClickListener {
             showTagSelectedDialog()
         }
@@ -455,7 +459,11 @@ class TasksFragment : Fragment() {
         }
     }
 
-    // Function that is used to show the calendar to the user
+    /**
+     * Function that is used to show the calendar to the user
+     *
+     * @param dateSelected this parameter gets the date that the user has chosen
+     */
     private fun showDatePickerDialog(dateSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -465,7 +473,7 @@ class TasksFragment : Fragment() {
         val dateSelector =
             DatePickerDialog(
                 requireContext(),
-                {_,year, month, day ->
+                { _, year, month, day ->
                     val date =
                         Calendar.getInstance().apply {
                             set(year, month, day)
@@ -521,7 +529,12 @@ class TasksFragment : Fragment() {
         )
     }
 
-    // Task is classified and the correct category is selected automatically for the user
+    /**
+     * Task is classified and the correct category is selected automatically for the user
+     *
+     * @param taskTitle The data to be classified
+     * @param spinner the spinner from which the tag is selected
+     */
     private fun classifyTask(
         taskTitle: String,
         spinner: Spinner,
@@ -574,7 +587,11 @@ class TasksFragment : Fragment() {
         )
     }
 
-    // As the user selects a category tag from the spinner only tasks of that category are obtained and shown
+    /**
+     * As the user selects a category tag from the spinner only tasks of that category are obtained and shown
+     *
+     * @param tag selected from the spinner to filter the tags
+     */
     private fun filterTasksByTag(tag: String) {
         if (tag == "All") {
             refreshTasksList()
@@ -629,7 +646,12 @@ class TasksFragment : Fragment() {
         }
     }
 
-    // Function used to convert JSON response for the API into task objects
+    /**
+     *  Function used to convert JSON response for the API into task objects
+     *
+     * @param responseBody
+     * @return A list of tasks is returned as obtained from the backend
+     */
     private fun getTasks(responseBody: String?): List<Task> {
         /**
          * Mutable list initialised so that tasks can be
@@ -637,18 +659,17 @@ class TasksFragment : Fragment() {
          */
         val tasks = mutableListOf<Task>()
 
-
         if (responseBody != null) {
-            //Json response is converted to an array
+            // Json response is converted to an array
             val json = JSONObject(responseBody)
             val tasksArray = json.getJSONArray("tasks")
 
-            //For loop used to iterate through all the items in array
+            // For loop used to iterate through all the items in array
             for (i in 0 until tasksArray.length()) {
-                //Variables that represent one task are obtained
+                // Variables that represent one task are obtained
                 val taskObject = tasksArray.getJSONObject(i)
 
-                //The needed details are extracted to create the task object
+                // The needed details are extracted to create the task object
                 val task =
                     Task(
                         taskObject.getInt("id"),
@@ -658,7 +679,7 @@ class TasksFragment : Fragment() {
                         taskObject.getString("username"),
                     )
 
-                //After object created it is added to the mutable list
+                // After object created it is added to the mutable list
                 tasks.add(task)
             }
         }

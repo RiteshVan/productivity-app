@@ -23,6 +23,7 @@ class HomeActivity :
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Username is retrieved
         username = intent.getStringExtra("username")
 
         // Listener to identify which item is selected by user
@@ -51,8 +52,12 @@ class HomeActivity :
         TODO("Not required")
     }
 
-    /*Function used to contain the process of switching features so that code can be
-      more easy to read and simpler to implement*/
+    /**
+     * Function used to contain the process of switching features so that code can be
+     * more easy to read and simpler to implement
+     *
+     * @param fragment The fragment that will be displayed
+     */
     private fun startFragment(fragment: Fragment) {
         val bundle = Bundle()
         bundle.putString("username", username)

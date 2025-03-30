@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 //Start point of application
+//Initial UI is setup so user can navigate
 class MainActivity : AppCompatActivity() {
 
 
