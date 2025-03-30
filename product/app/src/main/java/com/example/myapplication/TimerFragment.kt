@@ -1,58 +1,235 @@
 package com.example.myapplication
 
-import android.app.Dialog
+
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 
 
-class TimerFragment : Fragment() {
+class TimerFragment :
+    Fragment(),
+    View.OnClickListener {
+    private lateinit var sensorManager: SensorManager
+    private lateinit var proximitySensor: Sensor
 
-    private lateinit var spinner: Spinner
-    private lateinit var countDownTimer: CountDownTimer
-    private var timerRunning = false
+    private var timeSelected: Long = 6000
+    private var timeToGo: Long = 0
 
+    enum class TimerStatus {
+        STOPPED,
+        STARTED,
+        PAUSED,
+    }
 
-    private lateinit var textViewTimer: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var stopStartPause: Button
+    private lateinit var editTime: EditText
+    private lateinit var viewTime: TextView
+    lateinit var buttonReset: ImageView
+    private lateinit var buttonStartStop: ImageView
 
+    var timerStatus: TimerStatus = TimerStatus.STOPPED
+    private var countDownTimer: CountDownTimer? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)!!
+        if (proximitySensor == null) {
+            Toast.makeText(requireContext(), "Sensor unavailable", Toast.LENGTH_SHORT).show()
+        } else {
+            sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_timer, container, false)
-        textViewTimer = view.findViewById(R.id.timeLeft)
-        progressBar = view.findViewById(R.id.time_progress)
-        stopStartPause = view.findViewById(R.id.start_stop_button)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = inflater.inflate(R.layout.fragment_timer, container, false)
 
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews(view)
+        initListeners()
+    }
 
-        spinner = view.findViewById(R.id.spinner_time)
+    private fun initListeners() {
+        buttonReset.setOnClickListener(this)
+        buttonStartStop.setOnClickListener(this)
+    }
 
-        val listItems = listOf(15,25,30,45,60)
+    private fun initViews(view: View) {
+        progressBar = view.findViewById(R.id.progress_bar)
+        editTime = view.findViewById(R.id.edit_text_time)
+        viewTime = view.findViewById(R.id.text_view_time)
+        buttonReset = view.findViewById(R.id.reset_button)
+        buttonStartStop = view.findViewById(R.id.start_stop_button)
+    }
 
-        val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listItems)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        spinner.adapter = arrayAdapter
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.reset_button -> reset()
+            R.id.start_stop_button -> startStop()
+        }
+    }
 
-        val timeChosen= spinner.selectedItem
+    private fun reset() {
+        stopTimer()
+        timeToGo = timeSelected
+        viewTime.text = timeFormat(timeToGo)
+        setProgress()
+        timerStatus = TimerStatus.STOPPED
+        buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
+        buttonReset.visibility = View.GONE
+        editTime.isEnabled = true
+    }
 
+    fun startStop() {
+        when (timerStatus) {
+            TimerStatus.STOPPED, TimerStatus.PAUSED -> {
+                if (timeToGo == 0L) {
+                    setTimer()
+                }
+                setProgress()
+                buttonReset.visibility = View.VISIBLE
+                buttonStartStop.setImageResource(R.drawable.stop_blue_button_icon)
+                editTime.isEnabled = false
+                timerStatus = TimerStatus.STARTED
+                startTimer()
+            }
 
+            TimerStatus.STARTED -> {
+                stopTimer()
+                buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
+                timerStatus = TimerStatus.PAUSED
+            }
+        }
+    }
+
+    private fun setTimer() {
+        var time = editTime.text.toString().toIntOrNull() ?: 1
+
+        timeSelected = (time * 60 * 1000L).coerceAtMost(60 * 60 * 1000L * 50)
+
+        timeToGo = timeSelected
+        setProgress()
+    }
+
+    private fun startTimer() {
+        countDownTimer =
+            object : CountDownTimer(timeToGo, 1000) {
+                override fun onTick(timeLeft: Long) {
+                    timeToGo = timeLeft
+                    viewTime.text = timeFormat(timeToGo)
+                    updateProgressBar(timeLeft)
+                }
+
+                override fun onFinish() {
+                    viewTime.text = timeFormat(0)
+                    updateProgressBar(0)
+                    buttonReset.visibility = View.GONE
+
+                    buttonStartStop.setImageResource(R.drawable.play_blue_button_icon)
+                    editTime.isEnabled = true
+                    timerStatus = TimerStatus.STOPPED
+
+                    timeToGo = 0
+                }
+            }.start()
+    }
+
+    private fun updateProgressBar(timeLeft: Long) {
+        val progress = ((timeSelected - timeLeft) * 100 / timeSelected).toInt()
+        progressBar.progress = progress
+    }
+
+    private fun stopTimer() {
+        countDownTimer?.cancel()
+    }
+
+    private fun setProgress() {
         progressBar.max = 100
+        progressBar.progress = 0
+    }
 
+    private fun timeFormat(milliseconds: Long): String {
+        val total = milliseconds / 1000
+        val hours = total / 3600
+        val minutes = (total % 3600) / 60
+        val seconds = total % 60
 
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
 
+    private var proximityListener: SensorEventListener? =
+        object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                if (event?.sensor?.type == Sensor.TYPE_PROXIMITY) {
+                    if (event.values[0] == 0f && timerStatus == TimerStatus.STARTED) {
+                        Log.d("Sensor value", "Near")
+                        stopTimer()
+                        timerStatus = TimerStatus.PAUSED
+                        showPauseDialog()
+                    } else {
+                        Log.d("Sensor value", "Far away")
+                    }
+                }
+            }
 
-        return view
+            override fun onAccuracyChanged(
+                p0: Sensor?,
+                p1: Int,
+            ) {
+                // Not used
+            }
+        }
 
+    private fun showPauseDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder
+            .setMessage("Timer paused")
+            .setPositiveButton("Resume") { _, _ ->
+                if (timerStatus == TimerStatus.PAUSED) {
+                    startTimer()
+                    timerStatus = TimerStatus.STARTED
+                }
+            }.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }.setCancelable(true)
+
+        val dialog = builder.create()
+
+        dialog.setOnDismissListener {
+            if (timerStatus == TimerStatus.PAUSED) {
+                startTimer()
+                timerStatus = TimerStatus.STARTED
+            }
+        }
+
+        dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopTimer()
+        sensorManager.unregisterListener(proximityListener)
     }
 }
