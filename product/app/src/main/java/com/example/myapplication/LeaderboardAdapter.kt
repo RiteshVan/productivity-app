@@ -8,7 +8,7 @@ import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
-class LeaderboardAdapter(private val leaderboard: List<Pair<String,Int> >) :
+open class LeaderboardAdapter(private var leaderboard: List<Pair<String,Int> >) :
     RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>(){
 
     class LeaderboardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -35,5 +35,10 @@ class LeaderboardAdapter(private val leaderboard: List<Pair<String,Int> >) :
     }
 
     override fun getItemCount() = leaderboard.size
+
+    fun updateLeaderboard(newLeaderboard : List<Pair<String,Int>>) {
+        leaderboard=newLeaderboard
+        notifyDataSetChanged()
+    }
 
 }
