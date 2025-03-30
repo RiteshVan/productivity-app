@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentLeaderboardBinding
 
-
+//This fragment is used to display the users' scores and their rankings on the leaderboard
 class LeaderboardFragment : Fragment() {
 
     private  var _binding: FragmentLeaderboardBinding? = null
