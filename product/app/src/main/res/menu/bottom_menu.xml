@@ -13,16 +13,16 @@
     <item
         android:id="@+id/diary"
 
+        android:icon="@drawable/diary"
         />
 
 
 
 
     <item
-        android:id="@+id/setting_nav_button"
+        android:id="@+id/timer_nav_button"
 
-        android:icon="@drawable/setting_icon"
-        />
+        android:icon="@drawable/timer_icon"/>
 
     <item
         android:id="@+id/leaderboard_nav_button"
