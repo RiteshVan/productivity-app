@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -34,16 +33,15 @@ import java.util.Locale
 import kotlin.random.Random
 
 class TasksFragment : Fragment() {
-
     private val client = OkHttpClient()
 
-    private  var _binding: FragmentTasksBinding? = null
+    private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var tasksAdapter:TasksAdapter
-    private lateinit var selectedTag:String
-    private lateinit var selectedTime:String
-    private lateinit var selectedDueDate:String
+    private lateinit var tasksAdapter: TasksAdapter
+    private lateinit var selectedTag: String
+    private lateinit var selectedTime: String
+    private lateinit var selectedDueDate: String
 
     var tempCaption: String? = null
 
@@ -55,69 +53,83 @@ class TasksFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                    val taskTitle = tempCaption ?:"No caption"
+                    val taskTitle = tempCaption ?: "No caption"
 
-                    Log.d("tasktest","$taskTitle")
+                    Log.d("tasktest", "$taskTitle")
 
                     imageBitmap?.let {
                         uploadImage(it, taskTitle)
                     }
-
                 }
-
             }
     }
 
-    private fun uploadImage(bitmap: Bitmap,taskTitle: String){
-
-        val randomNumber = Random.nextLong(10000) //Selects random number up to 99
-
+    private fun uploadImage(
+        bitmap: Bitmap,
+        taskTitle: String,
+    ) {
+        val randomNumber = Random.nextLong(10000) // Selects random number up to 99
 
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val byteArray = stream.toByteArray()
 
         val requestBody = byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull())
-        val multipartBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("image","task-image$randomNumber.jpeg", requestBody)
-            .addFormDataPart("caption",taskTitle)
-            .build()
+        val multipartBody =
+            MultipartBody
+                .Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", "task-image$randomNumber.jpeg", requestBody)
+                .addFormDataPart("caption", taskTitle)
+                .build()
 
-        val request = Request.Builder().url("http://192.168.1.112:4997/upload").post(multipartBody).build()
+        val request =
+            Request
+                .Builder()
+                .url("http://192.168.1.112:4997/upload")
+                .post(multipartBody)
+                .build()
 
-
-        client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show()
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            override fun onResponse(call: Call, response: Response) {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                    }
+                    response.close()
                 }
-                response.close()
-            }
-        })
-        }
-
-
+            },
+        )
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        _binding= FragmentTasksBinding.inflate(inflater,container,false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        tasksAdapter = TasksAdapter(emptyList(),requireContext(),"testUser",cameraLauncher)
+        tasksAdapter = TasksAdapter(emptyList(), requireContext(), "testUser", cameraLauncher)
 
         val tasksView = binding.tasksView
 
@@ -127,172 +139,73 @@ class TasksFragment : Fragment() {
 
         refreshTasksList()
 
-
         editTaskDialog()
-
-        binding.selectTagSelection.setOnClickListener{
-            showTagSelectedDialog()
-        }
     }
-
-    private fun showTagSelectedDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        val inflater = layoutInflater
-        val dialogLayout = inflater.inflate(R.layout.tag_category_selection_dialog,null)
-        val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
-
-        val listTags = listOf("All","Work","Exercise","Personal","Shopping","Uni  Work","Gardening")
-
-        val arrayAdapter  = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listTags)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-
-        tag.adapter = arrayAdapter
-
-        builder.setView(dialogLayout)
-            .setTitle("Select Tag")
-            .setPositiveButton("OK") {_,_->
-                val selectedTag = tag.selectedItem.toString()
-                filterTasksByTag(selectedTag)
-            }
-                .setNegativeButton("Cancel",null)
-                .show()
-
-        
-    }
-
-
-
-    private fun filterTasksByTag(tag:String) {
-        if (tag == "All"){refreshTasksList()}
-
-        else{
-            val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks_by_tag/$tag").build()
-
-            client.newCall(request).enqueue(object :Callback{
-                override fun onFailure(call: Call, e: IOException) {
-                    requireActivity().runOnUiThread{
-                        Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        if (response.isSuccessful){
-                            val responseBody = response.body?.string()
-
-                            if (responseBody != null) {
-                                val tasks = getTasks(responseBody)
-                                requireActivity().runOnUiThread {
-                                    tasksAdapter.updateTasks(tasks)
-                                }
-                            }
-
-                            else{
-                                requireActivity().runOnUiThread{
-                                    Toast.makeText(requireContext(),"Empty task list",Toast.LENGTH_SHORT).show()
-                                }
-                            }
-
-                        }
-                        else{
-                            requireActivity().runOnUiThread{
-                                Toast.makeText(requireContext(),"Cannot get tasks",Toast.LENGTH_SHORT).show()
-                            }
-
-                        }
-
-
-
-                    }
-                    catch (e:Exception) {
-                        requireActivity().runOnUiThread{
-                            Log.d("check","$e")
-                            Toast.makeText(requireContext(),"Response error: $e",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    finally {
-                        response.close()
-                    }
-
-                }
-            })
-        }
-
-
-    }
-
-
 
     override fun onResume() {
         super.onResume()
-
     }
 
-
-    //Dialog popup to add task details
-    private fun editTaskDialog(){
-        binding.taskAdd.setOnClickListener(){
-            val builder =AlertDialog.Builder(requireContext())
+    // Dialog popup to add task details
+    private fun editTaskDialog() {
+        binding.taskAdd.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
             val inflater = layoutInflater
-            val dialogLayout =inflater.inflate(R.layout.new_task_add_dialog,null)
+            val dialogLayout = inflater.inflate(R.layout.new_task_add_dialog, null)
             val editText = dialogLayout.findViewById<EditText>(R.id.task_add_text)
             val dueDateButton = dialogLayout.findViewById<Button>(R.id.select_due_date_button)
 
-            //Choose tag from spinner
+            // Choose tag from spinner
             val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
-            val listTags = listOf("Work","Exercise","Personal","Shopping","Uni  Work","Gardening")
+            val listTags = listOf("Work", "Exercise", "Personal", "Shopping", "Uni  Work", "Gardening")
 
-            val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listTags)
+            val arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listTags)
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
 
-            tag.adapter= arrayAdapter
+            tag.adapter = arrayAdapter
 
-            tag.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    selectedTag = parent.getItemAtPosition(position).toString()
+            tag.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View?,
+                        position: Int,
+                        id: Long,
+                    ) {
+                        selectedTag = parent.getItemAtPosition(position).toString()
+                    }
 
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // Used to handle case for no selection
+                        // Not needed for this implementation
+                    }
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    //Used to handle case for no selection
-                    //Not needed for this implementation
+            val time = dialogLayout.findViewById<Spinner>(R.id.select_hours)
 
-                }
+            val listHours = listOf("1", "2", "3", "4", "5")
 
-            }
-
-
-            val time =  dialogLayout.findViewById<Spinner>(R.id.select_hours)
-
-            val listHours = listOf("1","2","3","4","5")
-
-            val arrayAdapterHours = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,listHours)
+            val arrayAdapterHours = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listHours)
             arrayAdapterHours.setDropDownViewResource(android.R.layout.simple_spinner_item)
 
             time.adapter = arrayAdapterHours
 
-            time.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    selectedTime = parent.getItemAtPosition(position).toString()
+            time.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View?,
+                        position: Int,
+                        id: Long,
+                    ) {
+                        selectedTime = parent.getItemAtPosition(position).toString()
+                    }
 
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // Used to handle case for no selection
+                        // Not needed for this implementation
+                    }
                 }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    //Used to handle case for no selection
-                    //Not needed for this implementation
-                }
-            }
 
 //            editText.addTextChangedListener(object : TextWatcher{
 //                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -308,149 +221,164 @@ class TasksFragment : Fragment() {
 //
 //            })
 
-
-
             dueDateButton.setOnClickListener {
-                showDataPickerDialog {date ->
-                    selectedDueDate=date
+                showDataPickerDialog { date ->
+                    selectedDueDate = date
                 }
             }
 
-
-            with(builder){
+            with(builder) {
                 setTitle("Add Task")
-                setPositiveButton("OK"){dialog ,which->
+                setPositiveButton("OK") { dialog, which ->
                     val title = editText.text.toString()
 
-
-                    val randomNumber = Random.nextLong(10000) //Picks random number up to 9999
+                    val randomNumber = Random.nextLong(10000) // Picks random number up to 9999
                     val uniqueID = "$randomNumber"
 
-                    val formBody = FormBody.Builder()
-                        .add("id",uniqueID)
-                        .add("title",title)
-                        .add("tag",selectedTag)
-                        .add("hours",selectedTime)
-                        .add("username","testUser")
-                        .add("due_date",selectedDueDate)
-                        .build()
+                    val formBody =
+                        FormBody
+                            .Builder()
+                            .add("id", uniqueID)
+                            .add("title", title)
+                            .add("tag", selectedTag)
+                            .add("hours", selectedTime)
+                            .add("username", "testUser")
+                            .add("due_date", selectedDueDate)
+                            .build()
 
-                    val request = Request.Builder()
-                        .url("http://192.168.1.112:4998/add_task")
-                        .post(formBody)
-                        .build()
+                    val request =
+                        Request
+                            .Builder()
+                            .url("http://192.168.1.112:4998/add_task")
+                            .post(formBody)
+                            .build()
 
-                    client.newCall(request).enqueue(object : Callback{
-                        override fun onFailure(call: Call, e: IOException) {
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                        override fun onResponse(call: Call, response: Response) {
-                            try {
-                                if (response.isSuccessful) {
-                                    requireActivity().runOnUiThread {
-                                        requireActivity().runOnUiThread {
-                                            Toast.makeText(
-                                                requireContext(),"added",Toast.LENGTH_SHORT)
-                                                .show()
-
-                                            tasksAdapter.refreshTasks()
-                                        }
-
-                                        Toast.makeText(
-                                            requireContext(),"added",Toast.LENGTH_SHORT)
-                                            .show()
-
-
-                                    }
+                    client.newCall(request).enqueue(
+                        object : Callback {
+                            override fun onFailure(
+                                call: Call,
+                                e: IOException,
+                            ) {
+                                requireActivity().runOnUiThread {
+                                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                                 }
-                            } catch (e:Exception) {
-                                Toast.makeText(
-                                    requireContext(),"Response error",Toast.LENGTH_SHORT)
-                                    .show()
-
-                            } finally {
-                                response.close()
                             }
-                        }
 
-                    })
+                            override fun onResponse(
+                                call: Call,
+                                response: Response,
+                            ) {
+                                try {
+                                    if (response.isSuccessful) {
+                                        requireActivity().runOnUiThread {
+                                            requireActivity().runOnUiThread {
+                                                Toast
+                                                    .makeText(
+                                                        requireContext(),
+                                                        "added",
+                                                        Toast.LENGTH_SHORT,
+                                                    ).show()
 
+                                                tasksAdapter.refreshTasks()
+                                            }
+
+                                            Toast
+                                                .makeText(
+                                                    requireContext(),
+                                                    "added",
+                                                    Toast.LENGTH_SHORT,
+                                                ).show()
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    Toast
+                                        .makeText(
+                                            requireContext(),
+                                            "Response error",
+                                            Toast.LENGTH_SHORT,
+                                        ).show()
+                                } finally {
+                                    response.close()
+                                }
+                            }
+                        },
+                    )
                 }
-                setNegativeButton("Cancel"){_ ,_->
-                    Log.d("Tasks","cancelled")
+                setNegativeButton("Cancel") { dialog, which ->
+                    Log.d("Tasks", "cancelled")
                 }
                 setView(dialogLayout)
                 show()
-
             }
-
-
         }
-
     }
 
-    private fun showDataPickerDialog(dateSelected:(String) -> Unit) {
-        val calendar =  Calendar.getInstance()
+    private fun showDataPickerDialog(dateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dateSelector = DatePickerDialog(requireContext(),
-            { _,year,month,day->
-                val date = Calendar.getInstance().apply {
-                    set(year,month,day)
-                }
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
-                val finalDate = dateFormat.format(date.time)
-                dateSelected(finalDate)
-
-        },year,month,day)
+        val dateSelector =
+            DatePickerDialog(
+                requireContext(),
+                { _, year, month, day ->
+                    val date =
+                        Calendar.getInstance().apply {
+                            set(year, month, day)
+                        }
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val finalDate = dateFormat.format(date.time)
+                    dateSelected(finalDate)
+                },
+                year,
+                month,
+                day,
+            )
 
         dateSelector.show()
     }
 
-
-
-    //Refresh tasks from backend
+    // Refresh tasks from backend
     private fun refreshTasksList() {
         val request = Request.Builder().url("http://192.168.1.112:4998/get_tasks").build()
 
-        client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show()
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (response.isSuccessful) {
-
-
-                        requireActivity().runOnUiThread{
-                            tasksAdapter.refreshTasks()
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    try {
+                        if (response.isSuccessful) {
+                            requireActivity().runOnUiThread {
+                                tasksAdapter.refreshTasks()
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to fetch tasks", Toast.LENGTH_SHORT).show()
                         }
-
-                    } else {
-                        Toast.makeText(requireContext(),"Failed to fetch tasks",Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "Response error", Toast.LENGTH_SHORT).show()
+                        }
+                    } finally {
+                        response.close()
                     }
-                } catch (e: Exception){
-                    requireActivity().runOnUiThread{
-                        Toast.makeText(requireContext(),"Response error",Toast.LENGTH_SHORT).show()
-
-                    }
-                } finally {
-                    response.close()
                 }
-            }
-        })
+            },
+        )
     }
 
-
-    private fun getTasks(responseBody: String?) : List<Task> {
+    private fun getTasks(responseBody: String?): List<Task> {
         val tasks = mutableListOf<Task>()
 
         if (responseBody != null) {
@@ -459,42 +387,51 @@ class TasksFragment : Fragment() {
 
             for (i in 0 until tasksArray.length()) {
                 val taskObject = tasksArray.getJSONObject(i)
-                val task = Task(
-                    taskObject.getInt("id"),
-                    taskObject.getString("title"),
-                    taskObject.getString("tag"),
-                    taskObject.getInt("hours"),
-                    taskObject.getString("username")
-                )
+                val task =
+                    Task(
+                        taskObject.getInt("id"),
+                        taskObject.getString("title"),
+                        taskObject.getString("tag"),
+                        taskObject.getInt("hours"),
+                        taskObject.getString("username"),
+                    )
                 tasks.add(task)
             }
         }
 
         return tasks
-
     }
 
     private fun classifyTask(taskTitle: String) {
-        val formBody = FormBody.Builder().add("value",taskTitle).build()
+        val formBody = FormBody.Builder().add("value", taskTitle).build()
 
-        val request = Request.Builder().url("http://192.168.1.112:4999/classify").post(formBody).build()
+        val request =
+            Request
+                .Builder()
+                .url("http://192.168.1.112:4999/classify")
+                .post(formBody)
+                .build()
 
-        client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                //Handle errors
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful){
-                    Toast.makeText(requireContext(),"response.body?.toString()",Toast.LENGTH_LONG).show()
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
+                    // Handle errors
                 }
-                 else {
-                Toast.makeText(requireContext(),"not working",Toast.LENGTH_LONG).show()
+
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "response.body?.toString()", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(requireContext(), "not working", Toast.LENGTH_LONG).show()
+                    }
                 }
-            }
-
-
-        })
-
+            },
+        )
     }
 }
