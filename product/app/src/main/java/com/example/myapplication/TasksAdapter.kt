@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
@@ -39,11 +38,10 @@ class TasksAdapter(
     private val context: Context,
     private val usernameText: String,
 ) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
-
-    //Code used for camera permissions
+    // Code used for camera permissions
     private val requestCode = 100
 
-    //Holds task item views
+    // Holds task item views
     class TaskViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
@@ -59,9 +57,8 @@ class TasksAdapter(
         return TaskViewHolder(view)
     }
 
-    //Gets the total number of tasks in the recycler view
+    // Gets the total number of tasks in the recycler view
     override fun getItemCount(): Int = tasks.size
-
 
     override fun onBindViewHolder(
         holder: TaskViewHolder,
@@ -70,8 +67,7 @@ class TasksAdapter(
         val task = tasks[position]
         holder.titleTextView.text = task.title
 
-
-        //As users ticks of task dialog to ask to take picture is shown
+        // As users ticks of task dialog to ask to take picture is shown
         holder.checkBox.setOnClickListener {
             Log.d("test", "clicked")
             taskCompletedDialog(task)
@@ -97,32 +93,24 @@ class TasksAdapter(
             }.show()
     }
 
-
-    //Function used to open the camera
+    // Function used to open the camera
     private fun openCamera(task: Task) {
-
-
-        //This is used to locate the tasks fragment to a access its variables
-        val tasksFragment =
-            (context as? FragmentActivity)?.supportFragmentManager?.fragments?.find {
-                it is TasksFragment
-            } as? TasksFragment
-
-        //The caption variable is set to the task title before being uploaded to backend
+        // This is used to locate the tasks fragment to a access its variables
+        val tasksFragment = (context as? FragmentActivity)?.supportFragmentManager?.findFragmentById(R.id.tasks_fragment) as? TasksFragment
+        // The caption variable is set to the task title before being uploaded to backend
         tasksFragment?.caption = task.title
 
-        //This checks to ensure user has allowed camera to be used
+        // This checks to ensure user has allowed camera to be used
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
         ) {
-
-            //This intent is used to open camera
+            // This intent is used to open camera
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-            //The fragment's camera launcher is used to open
+            // The fragment's camera launcher is used to open
             tasksFragment?.cameraLauncher?.launch(intent)
         } else {
-            //If user has not already given permission to use the camera then request to use
+            // If user has not already given permission to use the camera then request to use
             ActivityCompat.requestPermissions(
                 context as Activity,
                 arrayOf(Manifest.permission.CAMERA),
@@ -130,17 +118,16 @@ class TasksAdapter(
             )
         }
 
-        //Deletes the task once the camera has been opened
+        // Deletes the task once the camera has been opened
         deleteTask(task.id)
     }
 
-    //Task id is used in order to delete the task from  the backend
+    // Task id is used in order to delete the task from  the backend
     private fun deleteTask(taskId: Int) {
-
-        //Initialises the client
+        // Initialises the client
         val client = OkHttpClient()
 
-        //Forms the request for the entry to be deleted from backend
+        // Forms the request for the entry to be deleted from backend
         val request =
             Request
                 .Builder()
@@ -148,14 +135,14 @@ class TasksAdapter(
                 .delete()
                 .build()
 
-        //Request is made
+        // Request is made
         client.newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(
                     call: Call,
                     e: IOException,
                 ) {
-                    //If the connection cannot be made error is shown
+                    // If the connection cannot be made error is shown
                     (context as? FragmentActivity)?.runOnUiThread {
                         Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                     }
@@ -167,13 +154,13 @@ class TasksAdapter(
                 ) {
                     try {
                         if (response.isSuccessful) {
-                            //If connection successful and task deleted message is shown accordingly
+                            // If connection successful and task deleted message is shown accordingly
                             (context as? FragmentActivity)?.runOnUiThread {
                                 Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show()
                                 refreshTasks()
                             }
                         } else {
-                            //If connection successful but task not deleted message is shown accordingly
+                            // If connection successful but task not deleted message is shown accordingly
                             (context as? FragmentActivity)?.runOnUiThread {
                                 Toast.makeText(context, "Task not deleted", Toast.LENGTH_SHORT).show()
                             }
@@ -190,7 +177,7 @@ class TasksAdapter(
         )
     }
 
-    //Function is used to obtain most recent tasks from the backend
+    // Function is used to obtain most recent tasks from the backend
     fun refreshTasks() {
         val client = OkHttpClient()
 
@@ -247,13 +234,13 @@ class TasksAdapter(
         val tasks = mutableListOf<Task>()
 
         if (responseBody != null) {
-            //Json response is converted to an array
+            // Json response is converted to an array
             val json = JSONObject(responseBody)
             val tasksArray = json.getJSONArray("tasks")
 
-            //For loop used to iterate through all the items in array
-            for (i in 0 until  tasksArray.length()) {
-                //Variables that represent one task are obtained
+            // For loop used to iterate through all the items in array
+            for (i in 0 until tasksArray.length()) {
+                // Variables that represent one task are obtained
                 val taskObject = tasksArray.getJSONObject(i)
                 val task =
                     Task(
@@ -264,16 +251,16 @@ class TasksAdapter(
                         taskObject.getString("username"),
                     )
 
-                //After object created it is added to the mutable list
+                // After object created it is added to the mutable list
                 tasks.add(task)
             }
         }
         return tasks
     }
 
-    //Updates the recycler view with new tasks
-    fun updateTasks(newTasks :List<Task>){
-        tasks=newTasks
+    // Updates the recycler view with new tasks
+    fun updateTasks(newTasks: List<Task>) {
+        tasks = newTasks
         notifyDataSetChanged()
     }
 }
