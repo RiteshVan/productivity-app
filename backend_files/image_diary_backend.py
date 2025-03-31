@@ -3,59 +3,85 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
 
-
+#Initialise app
 image_diary_backend = Flask(__name__)
 image_diary_backend.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 image_diary_backend.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 image_diary_backend.config['UPLOAD_FOLDER'] = 'static/uploads'
-image_diary_backend.config['UPLOAD_EXTENSIONS'] =[".jpeg"]
+image_diary_backend.config['UPLOAD_EXTENSIONS'] =[".jpeg"] #only accept jpegs for safety purposes
 
+#database initialised
 db =  SQLAlchemy(image_diary_backend)
 
+#ensure folder to hold images is present
 os.makedirs(image_diary_backend.config['UPLOAD_FOLDER'], exist_ok=True)
 
+#Image model is defined
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     caption = db.Column(db.String(150), nullable=False)
-    image_path = db.Column(db.String(150),nullable=False)
+    image = db.Column(db.String(150),nullable=False)
+    username = db.Column(db.String(150),nullable=False)
 
-
+#To test if database is operational
 @image_diary_backend.route('/test')
 def test():
     return 'Image Backend Operational'
 
+#Used to upload images and captions to the backend
 @image_diary_backend.route('/upload', methods=['POST'])
 def upload():
+    #details to be obtained from application
     image = request.files['image']
     caption = request.form['caption']
+    username = request.form['username']
 
 
-
+    #if a suitable image has been provided, check to see if file name is safe
+    #then add to folder and ensure path to it is stored on the database for access
     if image:
-        image_path = secure_filename(image.filename)
+        image_name = secure_filename(image.filename)
 
         image.save(os.path.join(image_diary_backend.config['UPLOAD_FOLDER'],image_name))
 
-        new_image = Image(image_path=image_name,caption=caption)
+        new_image = Image(image=image_name,caption=caption,username=username)
         db.session.add(new_image)
         db.session.commit()
 
     return "added image"
 
+#function is used to send images to be displayed on application
 @image_diary_backend.route('/get_images', methods=['GET'])
 def get_images():
-
+    #all images are obtained from the backend
     images = Image.query.all()
+
+    #Images are placed into list of dictionaries with their details
+    images_list = [{
+
+        'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
+        'caption':image.caption
+    } for image in images]
+        
+    #Sent to be viewed in app
+    return {"images":images_list}
+
+
+#same as earlier function but tasks are only obtained based on user logged in
+@image_diary_backend.route('/get_images/<username>', methods=['GET'])
+def get_images_by_user(username):
+    images = Image.query.filter_by(username=username).all()
 
     images_list = [{
 
-        'image':f"http://192.168.1.112:4997/static/uploads/{image.image_path}",
+        'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
         'caption':image.caption
     } for image in images]
         
     return {"images":images_list}
 
 
+#to run
 if __name__ == '__main__':
     with image_diary_backend.app_context():
         db.create_all()
