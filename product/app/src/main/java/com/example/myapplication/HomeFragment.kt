@@ -3,12 +3,12 @@ package com.example.myapplication
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.example.myapplication.databinding.FragmentHomeBinding
 import okhttp3.Call
 import okhttp3.Callback
@@ -19,7 +19,6 @@ import org.eazegraph.lib.charts.PieChart
 import org.eazegraph.lib.models.PieModel
 import org.json.JSONObject
 import java.io.IOException
-
 
 /**
  * This fragment is the home fragment.
@@ -37,6 +36,10 @@ class HomeFragment : Fragment() {
 
     var client = OkHttpClient()
 
+    private var listTaskTitles = mutableListOf<String>()
+
+    private lateinit var priorityView:TextView
+
     // These values are used to represent time ranges
     // The ranges are used to decide the greeting shown to the user
     private val MORNING_END = 11
@@ -48,6 +51,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+
 
         return binding.root
     }
@@ -64,8 +69,12 @@ class HomeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
+        priorityView = view.findViewById(R.id.priority_tasks)
+
+
+
         // Shows user message
-        greeting = view.findViewById<TextView>(R.id.greeting)
+        greeting = view.findViewById(R.id.greeting)
         greeting.text = setGreeting(Calendar.getInstance())
 
         // Generates the chart for the user
@@ -74,12 +83,16 @@ class HomeFragment : Fragment() {
 
         // Populates the chart with relevant values
         getHoursPerTag()
+
+        getPrioritisedTasks()
+
+
+
     }
 
     private fun setChart() {
         pieChart.animate()
     }
-
 
     /**
      * Function used to set greeting based on time of day
@@ -191,6 +204,50 @@ class HomeFragment : Fragment() {
         pieChart.animate()
     }
 
+    private fun getPrioritisedTasks() {
+        val request =
+            Request
+                .Builder()
+                .url("http://192.168.1.112:4998/get_prioritised_tasks")
+                .build()
+
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(
+                    call: Call,
+                    e: IOException,
+                ) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Failed to get the tasks", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onResponse(
+                    call: Call,
+                    response: Response,
+                ) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        val json = JSONObject(responseBody.toString())
+                        val array = json.getJSONArray("tasks")
+                        listTaskTitles.clear()
+
+                        // This gets up to first 5 values from database
+                        for (i in 0 until minOf(5, array.length())) {
+                            listTaskTitles.add(array.getJSONObject(i).getString("title"))
+                        }
+                    }
+
+                    activity?.runOnUiThread {
+                        if (isAdded) {
+                            priorityView.text = listTaskTitles.joinToString(separator = "\n")
+                        }
+                    }
+                }
+            },
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -200,5 +257,6 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         getHoursPerTag()
+        getPrioritisedTasks()
     }
 }

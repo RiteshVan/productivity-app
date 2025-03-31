@@ -96,7 +96,11 @@ class TasksAdapter(
     // Function used to open the camera
     private fun openCamera(task: Task) {
         // This is used to locate the tasks fragment to a access its variables
-        val tasksFragment = (context as? FragmentActivity)?.supportFragmentManager?.findFragmentById(R.id.tasks_fragment) as? TasksFragment
+        val tasksFragment =
+            (context as? FragmentActivity)
+                ?.supportFragmentManager
+                ?.findFragmentById(R.id.fragment_container) as? TasksFragment
+
         // The caption variable is set to the task title before being uploaded to backend
         tasksFragment?.caption = task.title
 

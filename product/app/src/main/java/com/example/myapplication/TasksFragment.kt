@@ -52,7 +52,7 @@ class TasksFragment : Fragment() {
     private val client = OkHttpClient()
 
     private var _binding: FragmentTasksBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
 
     private lateinit var tasksAdapter: TasksAdapter
     private lateinit var selectedTag: String
@@ -69,7 +69,7 @@ class TasksFragment : Fragment() {
      * As the camera and upload functionality is held in this fragment, this variable is
      * needed to be able to upload the correct caption to the backend.
      *
-     * This process can't be completed through the tasks adapter.
+     * This process cant be completed through the tasks adapter.
      */
     var caption: String? = null
 
@@ -89,8 +89,8 @@ class TasksFragment : Fragment() {
             usernameText = it.getString("username", "")
         }
 
-        // Used to test if username is loaded in correctly
-        Log.d("track", usernameText)
+        // Used to check if username is loaded in correctly
+        Log.d(usernameText, "track")
 
         /**
          * This is an activity launcher to take a picture
@@ -103,13 +103,11 @@ class TasksFragment : Fragment() {
 
                     /**
                      * Uses the task title as caption if variable passed as intended
-                     * otherwise placeholder caption used.
+                     * or else placeholder caption used.
                      */
                     val taskTitle = caption ?: "No caption"
 
-                    //Logs to test if the title is being passed correctly
-                    //Needed to double check if caption will be sent to backend
-                    Log.d("tasktest","$taskTitle")
+                    Log.d("tasktest", "$taskTitle")
 
                     // If image is present, it is uploaded along with the caption
                     image?.let {
@@ -124,10 +122,6 @@ class TasksFragment : Fragment() {
      *
      * Image bitmap converted to bytes so that it can be uploaded and stored in
      * the backend
-     *
-     *
-     * @param bitmap this is the image to be uploaded
-     * @param taskTitle This is the task title which is used as a caption
      */
     private fun uploadImage(
         bitmap: Bitmap,
@@ -253,7 +247,6 @@ class TasksFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        refreshTasksList()
     }
 
     // Dialog popup to add task details
@@ -461,11 +454,7 @@ class TasksFragment : Fragment() {
         }
     }
 
-    /**
-     * Function that is used to show the calendar to the user
-     *
-     * @param dateSelected this parameter gets the date that the user has chosen
-     */
+    // Function that is used to show the calendar to the user
     private fun showDatePickerDialog(dateSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -531,14 +520,7 @@ class TasksFragment : Fragment() {
         )
     }
 
-    /**
-     * Task is classified and the correct category is selected automatically for the user
-     *
-     * @param taskTitle The data to be classified
-     * @param spinner the spinner from which the tag is selected
-     *
-     * Once classified the tag is automatically selected from the spinner
-     */
+    // Task is classified and the correct category is selected automatically for the user
     private fun classifyTask(
         taskTitle: String,
         spinner: Spinner,
@@ -591,11 +573,7 @@ class TasksFragment : Fragment() {
         )
     }
 
-    /**
-     * As the user selects a category tag from the spinner only tasks of that category are obtained and shown
-     *
-     * @param tag selected from the spinner to filter the tags
-     */
+    // As the user selects a category tag from the spinner only tasks of that category are obtained and shown
     private fun filterTasksByTag(tag: String) {
         if (tag == "All") {
             refreshTasksList()
@@ -650,12 +628,7 @@ class TasksFragment : Fragment() {
         }
     }
 
-    /**
-     *  Function used to convert JSON response for the API into task objects
-     *
-     * @param responseBody
-     * @return A list of tasks is returned as obtained from the backend
-     */
+    // Function used to convert JSON response for the API into task objects
     private fun getTasks(responseBody: String?): List<Task> {
         /**
          * Mutable list initialised so that tasks can be
@@ -691,3 +664,4 @@ class TasksFragment : Fragment() {
         return tasks
     }
 }
+
