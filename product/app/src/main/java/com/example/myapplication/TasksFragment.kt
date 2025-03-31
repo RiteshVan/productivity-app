@@ -69,7 +69,7 @@ class TasksFragment : Fragment() {
      * As the camera and upload functionality is held in this fragment, this variable is
      * needed to be able to upload the correct caption to the backend.
      *
-     * This process cant be completed through the tasks adapter.
+     * This process can't be completed through the tasks adapter.
      */
     var caption: String? = null
 
@@ -89,8 +89,8 @@ class TasksFragment : Fragment() {
             usernameText = it.getString("username", "")
         }
 
-        // Used to check if username is loaded in correctly
-        Log.d(usernameText, "track")
+        // Used to test if username is loaded in correctly
+        Log.d("track", usernameText)
 
         /**
          * This is an activity launcher to take a picture
@@ -99,18 +99,20 @@ class TasksFragment : Fragment() {
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val imageBitmap = result.data?.extras?.get("data") as? Bitmap
+                    val image = result.data?.extras?.get("data") as? Bitmap
 
                     /**
                      * Uses the task title as caption if variable passed as intended
-                     * or else placeholder caption used.
+                     * otherwise placeholder caption used.
                      */
                     val taskTitle = caption ?: "No caption"
 
-                    Log.d("tasktest", "$taskTitle")
+                    //Logs to test if the title is being passed correctly
+                    //Needed to double check if caption will be sent to backend
+                    Log.d("tasktest","$taskTitle")
 
                     // If image is present, it is uploaded along with the caption
-                    imageBitmap?.let {
+                    image?.let {
                         uploadImage(it, taskTitle)
                     }
                 }
@@ -534,6 +536,8 @@ class TasksFragment : Fragment() {
      *
      * @param taskTitle The data to be classified
      * @param spinner the spinner from which the tag is selected
+     *
+     * Once classified the tag is automatically selected from the spinner
      */
     private fun classifyTask(
         taskTitle: String,

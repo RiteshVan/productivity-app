@@ -48,6 +48,8 @@ class LeaderboardFragment : Fragment() {
     }
 
 
+    //Call made to the backend to get leaderboard data from server
+    //This data is then displayed
     fun getLeaderboard () {
         val request = Request.Builder().url("http://192.168.1.112:4998/get_hours_per_user").build()
 

@@ -8,6 +8,13 @@ import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
+
+/**
+ * Adapter class is used to display leaderboard entries in a recycler view
+ * Each entry contains a username, rank and number of hours/points
+ *
+ * @param leaderboard A pair list containing a string and integer
+ */
 open class LeaderboardAdapter(private var leaderboard: List<Pair<String,Int> >) :
     RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>(){
 
@@ -34,8 +41,19 @@ open class LeaderboardAdapter(private var leaderboard: List<Pair<String,Int> >) 
 
     }
 
+    /**
+     * Returns the total number of items in the leaderboard
+     *
+     * @return Returns the size as an integer
+     */
     override fun getItemCount() = leaderboard.size
 
+    /**
+     * Updates the leaderboard with the current leaderboard values as stored in the database
+     *
+     * @param newLeaderboard Returns the list of leaderboard entries
+     *
+     */
     fun updateLeaderboard(newLeaderboard : List<Pair<String,Int>>) {
         leaderboard=newLeaderboard
         notifyDataSetChanged()

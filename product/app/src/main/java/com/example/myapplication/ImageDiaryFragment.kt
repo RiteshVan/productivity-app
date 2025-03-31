@@ -108,6 +108,7 @@ class ImageDiaryFragment : Fragment() {
                 val json = JSONObject(responseBody)
                 val imageArray: JSONArray = json.getJSONArray("images")
 
+                //For each item in json response, details are extracted and used to form the objects
                 for (i in 0 until imageArray.length()) {
                     val image = imageArray.getJSONObject(i)
                     val imageItem =
