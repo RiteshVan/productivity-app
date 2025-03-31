@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
 
     private var listTaskTitles = mutableListOf<String>()
 
-    private lateinit var priorityView:TextView
+    private lateinit var priorityView: TextView
 
     // These values are used to represent time ranges
     // The ranges are used to decide the greeting shown to the user
@@ -51,8 +51,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-
 
         return binding.root
     }
@@ -71,8 +69,6 @@ class HomeFragment : Fragment() {
 
         priorityView = view.findViewById(R.id.priority_tasks)
 
-
-
         // Shows user message
         greeting = view.findViewById(R.id.greeting)
         greeting.text = setGreeting(Calendar.getInstance())
@@ -85,9 +81,6 @@ class HomeFragment : Fragment() {
         getHoursPerTag()
 
         getPrioritisedTasks()
-
-
-
     }
 
     private fun setChart() {
@@ -208,7 +201,7 @@ class HomeFragment : Fragment() {
         val request =
             Request
                 .Builder()
-                .url("http://192.168.1.112:4998/get_prioritised_tasks")
+                .url("http://192.168.1.112:4998/get_prioritised_tasks/$usernameText")
                 .build()
 
         client.newCall(request).enqueue(
@@ -238,10 +231,8 @@ class HomeFragment : Fragment() {
                         }
                     }
 
-                    activity?.runOnUiThread {
-                        if (isAdded) {
-                            priorityView.text = listTaskTitles.joinToString(separator = "\n")
-                        }
+                    requireActivity().runOnUiThread {
+                        priorityView.text = listTaskTitles.joinToString(separator = "\n")
                     }
                 }
             },
