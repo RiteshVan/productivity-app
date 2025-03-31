@@ -14,6 +14,7 @@ candidate_labels = ["Work", "Exercise", "Personal", "Shopping", "Uni Work","Gard
 def test():
     return "test works"
 
+#function to classify text
 @tags_classifier.route("/classify",methods=['POST'])
 def classify():
     #Gets text input
@@ -25,8 +26,11 @@ def classify():
     label = result['labels'][0]
     
     #Returns result
+    print(label)
+
+    #Result obtained by the app
     return label
 
 #To run
 if __name__ == '__main__':
-    tags_classifier.run(port=4999)
+    tags_classifier.run(host='0.0.0.0',port=4999)
