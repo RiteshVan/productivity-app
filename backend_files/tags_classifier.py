@@ -9,12 +9,25 @@ cf = pipeline("zero-shot-classification",model="facebook/bart-large-mnli")
 #Potential labels
 candidate_labels = ["Work", "Exercise", "Personal", "Shopping", "Uni Work","Gardening"]
 
-#Test connection
+'''
+Uses to test if server is active
+
+Returns:
+    string to let user know server is operational
+'''
 @tags_classifier.route("/test")
 def test():
     return "test works"
 
-#function to classify text
+'''
+Classifies a given text input into a specific category.
+
+Parameters:
+    value (string): text input to be classified 
+
+Returns:
+    label (string): candidate label for value
+'''
 @tags_classifier.route("/classify",methods=['POST'])
 def classify():
     #Gets text input
