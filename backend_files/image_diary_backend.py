@@ -23,12 +23,28 @@ class Image(db.Model):
     image = db.Column(db.String(150),nullable=False)
     username = db.Column(db.String(150),nullable=False)
 
-#To test if database is operational
+'''
+Used to check if backend is operational
+
+Returns string to confirm to users/developers
+'''
 @image_diary_backend.route('/test')
 def test():
     return 'Image Backend Operational'
 
-#Used to upload images and captions to the backend
+
+
+'''
+Used to upload image and caption to the backend
+
+Parameters:
+    image (file):Image to be added to backend
+    caption (string):Caption for the image
+    username (string): to associate each image to specific person
+
+Return:
+    confirmation message that string has been added
+'''
 @image_diary_backend.route('/upload', methods=['POST'])
 def upload():
     #details to be obtained from application
@@ -50,7 +66,15 @@ def upload():
 
     return "added image"
 
-#function is used to send images to be displayed on application
+
+
+
+'''
+Sends all images and caption to be processed by the app
+
+Returns:
+    dictionary of all image details
+'''
 @image_diary_backend.route('/get_images', methods=['GET'])
 def get_images():
     #all images are obtained from the backend
