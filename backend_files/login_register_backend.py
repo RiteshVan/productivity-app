@@ -26,12 +26,31 @@ class User(db.Model):
     username = db.Column(db.String(50), primary_key=False)
     password = db.Column(db.String(128), primary_key=False)
 
-#Test connection
+
+
+'''
+Used to test that the backend is operational
+
+Returns a string to confirm server is operational
+'''
 @login_register_backend.route('/test')
 def test():
     return 'Login Backend Operational'
 
-#Register users
+
+
+
+'''
+User is registered to the application
+
+Parameters:
+    username (str):chosen username
+    password (string): chosen password
+
+
+Returns:
+    confirmation string
+'''
 @login_register_backend.route('/register', methods=['POST'])
 def register():
     #details to be recieved from app
@@ -69,7 +88,15 @@ def register():
         return "User Added Successfully!"
 
 
-#Checks user details then logs them in
+'''
+User is logged in to the application
+
+Parameters:
+    username (str):chosen username
+    password (string): chosen password
+
+Returns confirmation string
+'''
 @login_register_backend.route('/login', methods=['POST'])
 def login():
     #details to be recieved from app
