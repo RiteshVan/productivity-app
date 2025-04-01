@@ -35,13 +35,27 @@ class CompletedTask(db.Model):
     username = db.Column(db.String(25), nullable=False)
     due_date = db.Column(db.Date, nullable=True)
 
+'''
+Endpoint to test if operational
 
-#Test connection
+    returns: string to inform that server is operational
+'''
 @tasks_backend.route("/test") 
 def test(): 
     return "Task backend running"
 
-#Functionality to add task
+'''
+Takes task details to add entry to the database
+
+Parameters:
+    id (integer): task identifier
+    title (string):title of the task
+    tag (string): tag assigned to the task
+    username (string): user that has added the task
+    str_due_date (string): adds due date that the user has selected
+
+Returns string confimation that task has been added
+'''
 @tasks_backend.route("/add_task",methods=['POST'])
 def add_task():
     #Details obtained from application
@@ -70,7 +84,15 @@ def add_task():
     return "Successfully added task"
 
 
-#Uses task ID to move to completed tasks table before deleting
+'''
+User ticks of task and it is deleted from database
+
+Parameters:
+    task_id (integer): ID of task is used query and delete from database
+
+
+Returns confirmation of task deletion
+'''
 @tasks_backend.route("/delete_task/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     #Obtains the task from database
@@ -97,8 +119,11 @@ def delete_task(task_id):
     else:
         return {"error":"Task not deleted"}
     
+'''
+Endpoint used to get all tasks from database
 
-#Gets all tasks
+Returns all tasks in the form of a list of dictionaries
+'''
 @tasks_backend.route("/get_tasks")
 def get_tasks():
     #All tasks obtained and turned into list of dictionaries
@@ -177,7 +202,11 @@ def get_completed_tasks():
 
     return {"completed_tasks":completed_task_list}
 
-#Function is used to get hours worked per tag
+'''
+Hours worked per tag are calculated
+
+Returns dictionaries with hours per tag
+'''
 @tasks_backend.route("/get_hours_per_tag")
 def get_hours_per_tag():
     #All tasks are queried
@@ -220,7 +249,11 @@ def get_hours_per_tag_by_user(username):
 
 
 
-#Used for leaderboard feature
+'''
+Hours worked per user are calculated
+
+Returns dictionaries with hours per user
+'''
 @tasks_backend.route("/get_hours_per_user")
 def get_hours_per_user():
     #All finished tasks are queried
@@ -244,7 +277,14 @@ def get_hours_per_user():
 
 
 
-#Function used to prioritise task with a tag
+'''
+Task details are obtained to give each task a priority score
+
+Parameters:
+    title (string): title of the task
+    tag (string): tag for the task
+
+'''
 def prioritise_task(title,tag):
     #possible labels
     labels = ["urgent", "important", "routine task", "low priority"]
