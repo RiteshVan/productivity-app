@@ -124,6 +124,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
+                //If response is successful then details for hours are extracted from each tag
                 override fun onResponse(
                     call: Call,
                     response: Response,
@@ -137,7 +138,7 @@ class HomeFragment : Fragment() {
                         val personalHours = hoursPerTag.optInt("Personal", 0).toFloat()
                         val exerciseHours = hoursPerTag.optInt("Exercise", 0).toFloat()
                         val shoppingHours = hoursPerTag.optInt("Shopping", 0).toFloat()
-                        val uniWorkHours = hoursPerTag.optInt("Uni_Work", 0).toFloat()
+                        val uniWorkHours = hoursPerTag.optInt("Uni Work", 0).toFloat()
                         val gardeningHours = hoursPerTag.optInt("Gardening", 0).toFloat()
 
                         requireActivity().runOnUiThread {
@@ -197,6 +198,12 @@ class HomeFragment : Fragment() {
         pieChart.animate()
     }
 
+
+    /**
+     *
+     * Function used to be able to retrieve up to 5 of the most important tasks
+     *
+     */
     private fun getPrioritisedTasks() {
         val request =
             Request
@@ -220,9 +227,13 @@ class HomeFragment : Fragment() {
                     response: Response,
                 ) {
                     if (response.isSuccessful) {
+
+                        //Obtains response and converts to JSON to allow for conversion to app
                         val responseBody = response.body?.string()
                         val json = JSONObject(responseBody.toString())
                         val array = json.getJSONArray("tasks")
+
+                        //Empties current list to prepare new list
                         listTaskTitles.clear()
 
                         // This gets up to first 5 values from database
@@ -231,6 +242,7 @@ class HomeFragment : Fragment() {
                         }
                     }
 
+                    //The text view is updated
                     requireActivity().runOnUiThread {
                         priorityView.text = listTaskTitles.joinToString(separator = "\n")
                     }

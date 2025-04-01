@@ -195,7 +195,7 @@ class TasksFragment : Fragment() {
         val dialogLayout = inflater.inflate(R.layout.tag_category_selection_dialog, null)
         val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
 
-        val listTags = listOf("All", "Work", "Exercise", "Personal", "Shopping", "Uni  Work", "Gardening")
+        val listTags = listOf("All", "Work", "Exercise", "Personal", "Shopping", "Uni Work", "Gardening")
 
         val arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listTags)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
@@ -261,7 +261,7 @@ class TasksFragment : Fragment() {
 
             // Choose tag from spinner
             val tag = dialogLayout.findViewById<Spinner>(R.id.select_tag)
-            val listTags = listOf("Work", "Exercise", "Personal", "Shopping", "Uni  Work", "Gardening")
+            val listTags = listOf("Work", "Exercise", "Personal", "Shopping", "Uni Work", "Gardening")
 
             val arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listTags)
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
