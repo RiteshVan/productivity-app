@@ -491,7 +491,9 @@ class TasksFragment : Fragment() {
                     call: Call,
                     e: IOException,
                 ) {
-                    requireActivity().runOnUiThread {
+                    //Checks to make sure that activity is attached to fragment
+                    //Used to ensure there are no error messages when running tests
+                    activity?.runOnUiThread {
                         Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                     }
                 }

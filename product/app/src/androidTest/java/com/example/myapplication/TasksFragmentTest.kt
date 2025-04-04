@@ -70,6 +70,8 @@ class TasksFragmentTest {
         onView(withId(R.id.select_hours)).perform(click())
     }
 
+
+
     @Test
     fun testRecyclerViewIsPresent() {
         onView(withId(R.id.tasksView)).check(matches(isDisplayed()))
