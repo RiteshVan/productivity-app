@@ -60,9 +60,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         // Username is obtained
+        //If empty, empty string passed, primarily for testing purposes
         arguments?.let {
             usernameText = it.getString("username", "")
+        } ?: run {
+            usernameText = ""
         }
+
         super.onViewCreated(view, savedInstanceState)
 
         super.onViewCreated(view, savedInstanceState)
