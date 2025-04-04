@@ -5,17 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".TimerFragment">
 
+
+    <TextView
+        android:id="@+id/timerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/baloo"
+        android:gravity="center"
+        android:text="Timer"
+        android:textSize="30sp" />
+
+
     <ProgressBar
         android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
         android:layout_width="350dp"
         android:layout_height="350dp"
         android:layout_centerInParent="true"
         android:progressDrawable="@drawable/timer_circular_progress_bar"
         android:indeterminate="false"
         android:max="100"
-        android:progress="100"
-        android:rotation="90"
+        android:progress="5"
         />
 
     <EditText
