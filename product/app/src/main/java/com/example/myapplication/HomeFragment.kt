@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var greeting: TextView
 
-    private lateinit var usernameText: String
+    private var usernameText: String? = null
 
     var client = OkHttpClient()
 
@@ -63,8 +63,6 @@ class HomeFragment : Fragment() {
         //If empty, empty string passed, primarily for testing purposes
         arguments?.let {
             usernameText = it.getString("username", "")
-        } ?: run {
-            usernameText = ""
         }
 
         super.onViewCreated(view, savedInstanceState)
