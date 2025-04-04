@@ -44,7 +44,7 @@ def test():
 User is registered to the application
 
 Parameters:
-    username (str):chosen username
+    username (string):chosen username
     password (string): chosen password
 
 
@@ -92,7 +92,7 @@ def register():
 User is logged in to the application
 
 Parameters:
-    username (str):chosen username
+    username (string):chosen username
     password (string): chosen password
 
 Returns confirmation string
