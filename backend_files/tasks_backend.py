@@ -163,9 +163,28 @@ def get_tasks_by_user(username):
     return {"tasks":task_list}
 
 #Similar to function from earlier, just gets tasks based on specific tags
-@tasks_backend.route("/get_tasks_by_tag/<string:tag>") 
+@tasks_backend.route("/get_tasks_by_tag/<tag>") 
 def get_tasks_by_tag(tag): 
     tasks = Task.query.filter_by(tag=tag).all()
+
+    task_list = [{ 
+
+        'id':task.id, 
+        'title':task.title, 
+        'tag':task.tag,
+        'hours':task.hours, 
+        'username':task.username 
+
+        } 
+        for task in tasks 
+        ]
+    
+    return {"tasks":task_list}
+
+#Similar to function from earlier, just gets tasks based on specific users
+@tasks_backend.route("/get_tasks_by_tag/<tag>/<username>") 
+def get_tasks_by_tag_by_user(tag,username): 
+    tasks = Task.query.filter_by(tag=tag, username=username).all()
 
     task_list = [{ 
 
@@ -356,10 +375,12 @@ def get_prioritised_tasks(username):
 
 
     list = ""
+    val =1
 
     #The list is returned to the user as a string for simplicity and ease of understanding
     for task in prioritised_task_list:
-        list+= task['title']+"\n"
+        list+= str(val) + ". " + task['title']+"\n"
+        val +=1
 
     if list:
         return list
