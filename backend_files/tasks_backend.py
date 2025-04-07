@@ -378,7 +378,7 @@ def get_prioritised_tasks(username):
     val =1
 
     #The list is returned to the user as a string for simplicity and ease of understanding
-    for task in prioritised_task_list:
+    for task in sorted_by_priority:
         list+= str(val) + ". " + task['title']+"\n"
         val +=1
 
