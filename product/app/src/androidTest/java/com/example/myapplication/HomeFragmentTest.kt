@@ -1,7 +1,6 @@
 package com.example.myapplication
 
 import android.icu.util.Calendar
-import android.os.Bundle
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
@@ -11,10 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.eazegraph.lib.charts.PieChart
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -27,8 +24,6 @@ class HomeFragmentTest {
     private var calendar: Calendar? = null
 
     private lateinit var scenario: FragmentScenario<HomeFragment>
-
-
 
     private var homeFragment: HomeFragment? = null
 
@@ -44,8 +39,6 @@ class HomeFragmentTest {
         calendar = Calendar.getInstance()
 
         homeFragment = HomeFragment()
-
-
 
         homeFragment?.client = OkHttpClient()
     }
@@ -107,10 +100,4 @@ class HomeFragmentTest {
             assertEquals(6f, chart?.data?.get(5)?.value)
         }
     }
-
-
-
-
-
-
 }

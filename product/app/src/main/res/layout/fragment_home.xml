@@ -20,6 +20,26 @@
         android:text="Good morning!"
         android:textSize="30sp" />
 
+    <TextView
+        android:layout_width="407dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/priority_tasks_holder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="279dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="402dp"
+        android:fontFamily="@font/baloo"
+        android:gravity="center"
+        android:text="Prioritised tasks:"
+        android:textSize="20sp"
+
+        />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/graph_card_view"
         android:layout_width="wrap_content"
@@ -206,6 +226,7 @@
     </androidx.cardview.widget.CardView>
 
 
+
     <androidx.cardview.widget.CardView
         android:layout_width="262dp"
         android:layout_height="252dp"
@@ -217,7 +238,9 @@
         android:layout_marginTop="78dp"
         android:layout_marginRight="20dp"
         android:elevation="15dp"
-        app:cardCornerRadius="15dp">
+        app:cardCornerRadius="15dp"
+        android:id="@+id/priority_tasks_holder"
+        >
 
         <TextView
             android:layout_width="match_parent"

@@ -32,7 +32,7 @@ class ImageAdapter(private var images: List<ImageItem>,private val context:Conte
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageItem= images[position]
 
-        Glide.with(context).load(imageItem.imageUrl).into(holder.imageView)
+        Glide.with(context).load(imageItem.imageUrl).centerCrop().into(holder.imageView)
 
         holder.caption.text = imageItem.caption
 

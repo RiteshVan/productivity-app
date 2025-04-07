@@ -71,7 +71,7 @@ class LeaderboardFragment : Fragment() {
 
                     val leaderboard = mutableListOf<Pair<String,Int>>()
                     hoursPerUser.keys().asSequence().forEach { username ->
-                        val hours = hoursPerUser.optInt(username,0)
+                        val hours = hoursPerUser.optInt(username)
                         leaderboard.add(Pair(username,hours))
 
                     }

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.myapplication.databinding.FragmentHomeBinding
+import com.example.finalsubmissionapplication.databinding.FragmentHomeBinding
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -36,6 +36,8 @@ class HomeFragment : Fragment() {
 
     var client = OkHttpClient()
 
+    private var clientCall:Call? = null
+
     private var listTaskTitles = mutableListOf<String>()
 
     private lateinit var priorityView: TextView
@@ -60,7 +62,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         // Username is obtained
-        //If empty, empty string passed, primarily for testing purposes
+        // If empty, empty string passed, primarily for testing purposes
         arguments?.let {
             usernameText = it.getString("username", "")
         }
@@ -69,7 +71,10 @@ class HomeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
+        // view to show tasks in order of priority is initialised
+        // updates after backend classification
         priorityView = view.findViewById(R.id.priority_tasks)
+        priorityView.text = "waiting for classificaton"
 
         // Shows user message
         greeting = view.findViewById(R.id.greeting)
@@ -99,10 +104,10 @@ class HomeFragment : Fragment() {
 
         return when (hourOfDay) {
             // During morning hours
-            in 0..(MORNING_END) -> "Good Morning!"
+            in 0 until (MORNING_END) -> "Good Morning!"
 
             // During evening hours
-            in (MORNING_END + 1)..EVENING_END -> "Good Afternoon!"
+            in (MORNING_END + 1) until EVENING_END -> "Good Afternoon!"
 
             // Other hours show evening greeting
             else -> "Good Evening!"
@@ -113,7 +118,7 @@ class HomeFragment : Fragment() {
      * Function used to make call to backend to obtain values for each tag and update pie chart
      */
     fun getHoursPerTag() {
-        val request = Request.Builder().url("http://192.168.1.112:4998/get_hours_per_tag/$usernameText").build()
+        val request = Request.Builder().url("${ValuesURLs.GET_HOURS_PER_TAG}/$usernameText").build()
 
         client.newCall(request).enqueue(
             object : Callback {
@@ -126,7 +131,6 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                //If response is successful then details for hours are extracted from each tag
                 override fun onResponse(
                     call: Call,
                     response: Response,
@@ -200,20 +204,20 @@ class HomeFragment : Fragment() {
         pieChart.animate()
     }
 
-
     /**
-     *
-     * Function used to be able to retrieve up to 5 of the most important tasks
-     *
+     * Function is used to give tasks priority scores and
+     * update the card view with them in descending order
      */
     private fun getPrioritisedTasks() {
         val request =
             Request
                 .Builder()
-                .url("http://192.168.1.112:4998/get_prioritised_tasks/$usernameText")
+                .url("${ValuesURLs.GET_PRIORITISED_TASKS}/$usernameText")
                 .build()
 
-        client.newCall(request).enqueue(
+
+        clientCall = client.newCall(request)
+        clientCall?.enqueue(
             object : Callback {
                 override fun onFailure(
                     call: Call,
@@ -229,24 +233,10 @@ class HomeFragment : Fragment() {
                     response: Response,
                 ) {
                     if (response.isSuccessful) {
-
-                        //Obtains response and converts to JSON to allow for conversion to app
                         val responseBody = response.body?.string()
-                        val json = JSONObject(responseBody.toString())
-                        val array = json.getJSONArray("tasks")
-
-                        //Empties current list to prepare new list
-                        listTaskTitles.clear()
-
-                        // This gets up to first 5 values from database
-                        for (i in 0 until minOf(5, array.length())) {
-                            listTaskTitles.add(array.getJSONObject(i).getString("title"))
+                        requireActivity().runOnUiThread {
+                            priorityView.text = responseBody.toString()
                         }
-                    }
-
-                    //The text view is updated
-                    requireActivity().runOnUiThread {
-                        priorityView.text = listTaskTitles.joinToString(separator = "\n")
                     }
                 }
             },
@@ -256,12 +246,12 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        clientCall?.cancel()
     }
 
     // As fragment is reopened data is refreshed to match any changes to database
     override fun onResume() {
         super.onResume()
         getHoursPerTag()
-        getPrioritisedTasks()
     }
 }
