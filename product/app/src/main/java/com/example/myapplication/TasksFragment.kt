@@ -100,6 +100,7 @@ class TasksFragment : Fragment() {
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
+                    //Image taken by camera is obtained as bitmap
                     val image = result.data?.extras?.get("data") as? Bitmap
 
                     /**
