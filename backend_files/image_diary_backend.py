@@ -97,7 +97,8 @@ def get_images_by_user(username):
     images = Image.query.filter_by(username=username).all()
 
     images_list = [{
-
+        
+        #URL link used by Glide library in Android Studio to get images in database
         'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
         'caption':image.caption
     } for image in images]
