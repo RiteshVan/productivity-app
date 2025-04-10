@@ -112,8 +112,8 @@ class TasksFragment : Fragment() {
                     Log.d("tasktest", "$taskTitle")
 
                     // If image is present, it is uploaded along with the caption
-                    image?.let {
-                        uploadImage(it, taskTitle)
+                    if (image != null) {
+                        uploadImage(image, caption.toString())
                     }
                 }
             }
