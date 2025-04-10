@@ -83,11 +83,12 @@ def get_images():
     #Images are placed into list of dictionaries with their details
     images_list = [{
 
+        #URL link used by Glide library in Android Studio to get images in database
         'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
         'caption':image.caption
     } for image in images]
         
-    #Sent to be viewed in app
+    #Sent to be viewed in app along with respective captions
     return {"images":images_list}
 
 
@@ -98,7 +99,6 @@ def get_images_by_user(username):
 
     images_list = [{
         
-        #URL link used by Glide library in Android Studio to get images in database
         'image':f"http://192.168.1.112:4997/static/uploads/{image.image}",
         'caption':image.caption
     } for image in images]
