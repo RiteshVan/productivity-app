@@ -100,3 +100,13 @@ Added funcitonality to allow users to include due dates when adding tasks.
 
 14/3/25:
 Added functionality to score tasks based on difficulty (still being tested).
+
+20/3/25:
+Updated the scoring system for the priority feature
+
+25/3/25:
+Tested the priotity feature and fully implemented it
+
+30/3/25:
+Checked codebase thoroughly and added comments and fixed any style errors
+Code is complete bar minor things, will shift focus almost completely to the report
