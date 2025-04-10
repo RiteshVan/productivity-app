@@ -78,6 +78,7 @@ class TasksFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
 
     // Creates the variable for the camera action so that it can be called later
+    // Not private so that task adapter can use variable
     lateinit var cameraLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +91,7 @@ class TasksFragment : Fragment() {
         }
 
         // Used to check if username is loaded in correctly
-        Log.d(usernameText, "track")
+        Log.d("track", usernameText)
 
         /**
          * This is an activity launcher to take a picture
@@ -136,7 +137,7 @@ class TasksFragment : Fragment() {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val byteArray = stream.toByteArray()
 
-        // A request body is created so that only jpegs can be uploaded to the database
+        // A request body is created so that only jpegs can be uploaded to the database, for security reasons
         val requestBody = byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull())
 
         /**
@@ -361,7 +362,7 @@ class TasksFragment : Fragment() {
 
             with(builder) {
                 /**
-                 * As used presses this button, the details entered are used to
+                 * As user presses this button, the details entered are used to
                  * create tasks objects in the backend.
                  */
                 setTitle("Add Task")
@@ -455,6 +456,7 @@ class TasksFragment : Fragment() {
     }
 
     // Function that is used to show the calendar to the user
+    // Also selects date and formats it as needed for backend
     private fun showDatePickerDialog(dateSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -470,6 +472,7 @@ class TasksFragment : Fragment() {
                             set(year, month, day)
                         }
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
                     val finalDate = dateFormat.format(date.time)
                     dateSelected(finalDate)
                 },
@@ -491,8 +494,8 @@ class TasksFragment : Fragment() {
                     call: Call,
                     e: IOException,
                 ) {
-                    //Checks to make sure that activity is attached to fragment
-                    //Used to ensure there are no error messages when running tests
+                    // Checks to make sure that activity is attached to fragment
+                    // Used to ensure there are no error messages when running tests
                     activity?.runOnUiThread {
                         Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                     }
@@ -630,7 +633,7 @@ class TasksFragment : Fragment() {
         }
     }
 
-    // Function used to convert JSON response for the API into task objects
+    // Function used to convert JSON response from the API into task objects
     private fun getTasks(responseBody: String?): List<Task> {
         /**
          * Mutable list initialised so that tasks can be
@@ -666,4 +669,3 @@ class TasksFragment : Fragment() {
         return tasks
     }
 }
-

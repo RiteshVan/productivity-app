@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.finalsubmissionapplication.databinding.FragmentHomeBinding
+import com.example.myapplication.databinding.FragmentHomeBinding
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -36,9 +36,8 @@ class HomeFragment : Fragment() {
 
     var client = OkHttpClient()
 
-    private var clientCall:Call? = null
-
-    private var listTaskTitles = mutableListOf<String>()
+    // This call is initialised here so that call to get prioritised tasks can be cancelled if user navigates away
+    private var clientCall: Call? = null
 
     private lateinit var priorityView: TextView
 
@@ -62,7 +61,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         // Username is obtained
-        // If empty, empty string passed, primarily for testing purposes
+        // If empty, empty string passed, primarily done for testing purposes
         arguments?.let {
             usernameText = it.getString("username", "")
         }
@@ -71,8 +70,8 @@ class HomeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        // view to show tasks in order of priority is initialised
-        // updates after backend classification
+        // View to show tasks in order of priority is initialised
+        // Updates after backend classification
         priorityView = view.findViewById(R.id.priority_tasks)
         priorityView.text = "waiting for classificaton"
 
@@ -118,7 +117,7 @@ class HomeFragment : Fragment() {
      * Function used to make call to backend to obtain values for each tag and update pie chart
      */
     fun getHoursPerTag() {
-        val request = Request.Builder().url("${ValuesURLs.GET_HOURS_PER_TAG}/$usernameText").build()
+        val request = Request.Builder().url("http://192.168.1.112:4998/get_hours_per_tag/$usernameText").build()
 
         client.newCall(request).enqueue(
             object : Callback {
@@ -175,8 +174,10 @@ class HomeFragment : Fragment() {
         uniWorkHours: Float,
         gardeningHours: Float,
     ) {
+        //Chart is emptied before updating
         pieChart.clearChart()
 
+        //All values obtained are used to update the chart
         pieChart.addPieSlice(
             PieModel("Work", workHours, Color.parseColor("#FF0000")),
         )
@@ -201,6 +202,7 @@ class HomeFragment : Fragment() {
             PieModel("Gardening", gardeningHours, Color.parseColor("#008000")),
         )
 
+        //Chart is displayed with data
         pieChart.animate()
     }
 
@@ -212,9 +214,8 @@ class HomeFragment : Fragment() {
         val request =
             Request
                 .Builder()
-                .url("${ValuesURLs.GET_PRIORITISED_TASKS}/$usernameText")
+                .url("http://192.168.1.112:4998/get_prioritised_tasks/$usernameText")
                 .build()
-
 
         clientCall = client.newCall(request)
         clientCall?.enqueue(
@@ -235,6 +236,7 @@ class HomeFragment : Fragment() {
                     if (response.isSuccessful) {
                         val responseBody = response.body?.string()
                         requireActivity().runOnUiThread {
+                            //The view is updated with the tasks
                             priorityView.text = responseBody.toString()
                         }
                     }
@@ -246,6 +248,7 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        //Call to backend cancelled if user navigates away
         clientCall?.cancel()
     }
 

@@ -23,7 +23,7 @@ class HomeActivity :
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //Username is retrieved
+        // Username is retrieved
         username = intent.getStringExtra("username")
 
         // Listener to identify which item is selected by user
@@ -34,7 +34,6 @@ class HomeActivity :
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home_nav_button -> startHomeFragment()
-
                 R.id.timer_nav_button -> startFragment(TimerFragment())
                 R.id.tasks_nav_button -> startTaskFragment()
                 R.id.diary -> startImageDiary()

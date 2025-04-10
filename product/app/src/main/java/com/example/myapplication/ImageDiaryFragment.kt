@@ -85,6 +85,7 @@ class ImageDiaryFragment : Fragment() {
 
                     val images = parseImages(response)
 
+                    //Used to update recycler view to show images
                     requireActivity().runOnUiThread {
                         imageAdapter.updateData(images)
                     }
