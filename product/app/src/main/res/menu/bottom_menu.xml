@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_nav_button"
+        android:icon="@drawable/home_icon"/>
+
+    <item
+        android:id="@+id/tasks_nav_button"
+
+        android:icon="@drawable/note_icon"/>
+
+    <item
+        android:id="@+id/diary"
+
+        android:icon="@drawable/diary"
+        />
+
+
+
+
+    <item
+        android:id="@+id/timer_nav_button"
+
+        android:icon="@drawable/timer_icon"/>
+
+    <item
+        android:id="@+id/leaderboard_nav_button"
+
+        android:icon="@drawable/ranking"
+        />
+
+</menu>

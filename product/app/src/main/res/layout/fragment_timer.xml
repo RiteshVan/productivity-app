@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TimerFragment">
+
+
+    <TextView
+        android:id="@+id/timerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/baloo"
+        android:gravity="center"
+        android:text="Timer"
+        android:textSize="30sp" />
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_centerInParent="true"
+        android:progressDrawable="@drawable/timer_circular_progress_bar"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="5"
+        />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:hint="Enter time"
+        android:textSize="20sp"
+        android:fontFamily="@font/baloo"
+        android:id="@+id/edit_text_time"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/text_view_time"
+        android:inputType="number"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:maxEms="5"
+        />
+
+    <TextView
+        android:id="@+id/text_view_time"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="00:00:00"
+        android:textSize="40sp"
+        android:fontFamily="@font/baloo"
+        android:textStyle="bold"
+        />
+
+    <ImageView
+        android:id="@+id/reset_button"
+        android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:layout_below="@id/text_view_time"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/restart_timer_icon"
+        />
+
+    <ImageView
+        android:id="@+id/start_stop_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/progress_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/play_blue_button_icon"
+        />
+
+
+</RelativeLayout>
